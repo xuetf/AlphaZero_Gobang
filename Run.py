@@ -14,7 +14,7 @@ root_data_file = "data/"
 def run():
     n = 4
     width, height = 6, 6
-    model_file = root_data_file + 'current_policy_simple_net_epochs_1200_6_6_4.model'
+    model_file = root_data_file + 'current_policy_simple_net_epochs_1500_6_6_4.model'
     try:
         board = Board(width=width, height=height, n_in_row=n)
         game = Game(board)
@@ -34,7 +34,7 @@ def run():
         # human player, input your move in the format: 2,3
         human = HumanPlayer()
         # set start_player=0 for human first
-        game.start_game(human, mcts_player, who_first=1, is_shown=1)
+        game.start_game(human, mcts_player, who_first=0, is_shown=1)
 
     except KeyboardInterrupt:
         print('\n\rquit')
@@ -43,7 +43,7 @@ def run():
 def run_between_alphazero():
     n = 4
     width, height = 6, 6
-    cur_model_file = root_data_file + 'current_policy_simple_net_6_6_4.model'
+    cur_model_file = root_data_file + 'current_policy_simple_net_epochs_1500_6_6_4.model'
     best_model_file = root_data_file + 'current_policy_simple_net_epochs_1200_6_6_4.model'
 
     cur_policy_param = pickle.load(open(cur_model_file, 'rb'))
@@ -63,7 +63,7 @@ def run_between_alphazero():
             best_mcts_player = AlphaZeroPlayer(best_policy.predict, c_puct=5,
                                      nplays=1000, player_name="Current 1200")  # set larger n_playout for better performance
             cur_mcts_player = AlphaZeroPlayer(cur_policy.predict, c_puct=5,
-                                     nplays=1000, player_name="Current")
+                                     nplays=1000, player_name="Current 1500")
 
             # set start_player=0 for human first
             winner = game.start_game(best_mcts_player, cur_mcts_player, who_first=epochs%2, is_shown=1)
