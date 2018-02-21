@@ -161,7 +161,7 @@ class TrainPipeline():
                 extend_data.append((equi_state, np.flipud(equi_mcts_prob).flatten(), winner))
         return extend_data
 
-    def save_model(self, win_ratio, epochs, prefix='lr_1e-3_300_decay_10_'):
+    def save_model(self, win_ratio, epochs, prefix='lr_1e-3_200_decay_10_play_3_buffer_5000_'):
         # save
         net_params = self.policy_value_net.get_policy_param()  # get model params
         pickle.dump(net_params, open(root_data_file + prefix + "current_policy_{}_epochs_{}.model".format(self.policy_value_net, epochs), 'wb'),
