@@ -41,11 +41,11 @@ class ResidualBlock(nn.Module):
 
     def forward(self, x):
         out = self.conv1(x)
-        #out = self.bn1(out)
+        out = self.bn1(out)
         out = self.relu1(out)
 
         out = self.conv2(out)
-        #out = self.bn2(out)
+        out = self.bn2(out)
         out += x # skip connection that adds the input to the block
         out = self.relu2(out)
         return out

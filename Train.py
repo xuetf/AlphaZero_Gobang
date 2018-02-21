@@ -42,7 +42,7 @@ class TrainPipeline():
         self.game_batch_num = 1500
         self.best_win_ratio = 0.0
         # num of simulations used for the pure mcts, which is used as the opponent to evaluate the trained policy
-        self.pure_mcts_playout_num = 500
+        self.pure_mcts_playout_num = 1000
         if init_model:
             print ('init model')
             # start training from an initial policy-value net
@@ -104,7 +104,7 @@ class TrainPipeline():
 
     def adjust_learning_rate_2(self, iteration):
         if (iteration+1) % 200 == 0:
-            self.lr_multiplier /= 1.5
+            self.lr_multiplier /= 10
         print ("lr:{}".format(self.learn_rate * self.lr_multiplier))
 
 
@@ -158,16 +158,16 @@ class TrainPipeline():
                 extend_data.append((equi_state, np.flipud(equi_mcts_prob).flatten(), winner))
         return extend_data
 
-    def save_model(self, win_ratio, epochs):
+    def save_model(self, win_ratio, epochs, prefix='lr_1e-3_300_decay_10_'):
         # save
         net_params = self.policy_value_net.get_policy_param()  # get model params
-        pickle.dump(net_params, open(root_data_file+"current_policy_{}_epochs_{}.model".format(self.policy_value_net, epochs), 'wb'),
+        pickle.dump(net_params, open(root_data_file + prefix + "current_policy_{}_epochs_{}.model".format(self.policy_value_net, epochs), 'wb'),
                     pickle.HIGHEST_PROTOCOL)  # save model param to file
 
         if win_ratio > self.best_win_ratio:
             print("New best policy!!!!!!!!")
             self.best_win_ratio = win_ratio
-            pickle.dump(net_params, open(root_data_file+"best_policy_{}_epochs_{}.model".format(self.policy_value_net, epochs), 'wb'),
+            pickle.dump(net_params, open(root_data_file + prefix +"best_policy_{}_epochs_{}.model".format(self.policy_value_net, epochs), 'wb'),
                         pickle.HIGHEST_PROTOCOL)  # update the best_policy
             if self.best_win_ratio == 1.0 and self.pure_mcts_playout_num < 5000:
                 self.pure_mcts_playout_num += 1000  # 增强
