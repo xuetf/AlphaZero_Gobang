@@ -31,10 +31,10 @@ class TrainPipeline():
         self.temp = 1.0  # the temperature param
         self.n_playout = 400  # num of simulations for each move
         self.c_puct = 5
-        self.buffer_size = 10000
+        self.buffer_size = 5000
         self.batch_size = 512  # mini-batch size for training
         self.data_buffer = deque(maxlen=self.buffer_size)
-        self.play_batch_size = 1  # how many games of each self-play epoch
+        self.play_batch_size = 3  # how many games of each self-play epoch
         self.epochs = 5  # num of train_steps for each update
         self.is_adjust_lr = True # whether dynamic changing lr
         self.kl_targ = 0.025  # KL散度量，用于early stop
@@ -58,11 +58,14 @@ class TrainPipeline():
 
     def self_play(self, n_games=1):
         """collect self-play data for training"""
+        self.episode_len = 0
+        self.augmented_len = 0
         for i in range(n_games):
             winner, play_data, episode_len = self.game.start_self_play_game(self.mcts_player, temp=self.temp)
-            self.episode_len = episode_len
+            self.episode_len += episode_len
             # augment the data
             play_data = self.augment_data(play_data)
+            self.augmented_len += len(play_data)
             self.data_buffer.extend(play_data)
 
     def optimize(self, iteration=0):
@@ -180,7 +183,7 @@ class TrainPipeline():
         try:
             for i in range(self.game_batch_num):
                 self.self_play(self.play_batch_size) # big step 1
-                print("batch i:{}, episode_len:{}".format(i + 1, self.episode_len))
+                print("iteration i:{}, episode_len:{}, augmented_len:{}, current_buffer_len:{}".format(i + 1, self.episode_len, self.augmented_len, len(self.data_buffer)))
 
                 if len(self.data_buffer) > self.batch_size:
                     loss, entropy = self.optimize(iteration=i) # big step 2
