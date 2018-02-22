@@ -51,6 +51,10 @@ class TreeNode(object):
 
         self._n_visits += 1
         # Update Q, a running average of values for all visits.
+        # 这一步合并了W，Q, 推导如下：
+        # W = W_old + leaf_value; Q_old = W_old / (n-1) => W_old = (n-1)*Q_old; Q = W/n
+        # Q = W/n=(W_old + leaf_value)/n = ((n-1)*Q_old+leaf_value)/n
+        #   = (n*Q_old-Q_old+leaf_value)/n = Q_old + (leaf_value-Q_old)/n
         self._Q += 1.0 * (leaf_value - self._Q) / self._n_visits
 
     def is_leaf(self):

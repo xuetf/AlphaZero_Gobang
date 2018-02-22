@@ -63,7 +63,7 @@ class ResNet(nn.Module):
         self.board_height = board_height
         # common layers
         self.conv_layer = ConvBlock(in_channels, out_channels)
-        self.res_layer = self.make_residual_layers(2, out_channels) # 论文里blocks=19 or 39
+        self.res_layer = self.make_residual_layers(1, out_channels) # 论文里blocks=19 or 39
 
         # policy head: action policy layers
         self.act_filters = 2
@@ -215,9 +215,9 @@ class PolicyValueNet():
         self.l2_const = 1e-4  # coef of l2 penalty 
         # the policy value net module
         if self.use_gpu:
-            self.policy_value_net = SimpleResNet(board_width, board_height).cuda()
+            self.policy_value_net = ResNet(board_width, board_height).cuda()
         else:
-            self.policy_value_net = SimpleResNet(board_width, board_height)
+            self.policy_value_net = ResNet(board_width, board_height)
         self.optimizer = optim.Adam(self.policy_value_net.parameters(), weight_decay=self.l2_const)
 
         if net_params:
@@ -281,7 +281,7 @@ class PolicyValueNet():
         value_loss = F.mse_loss(value_output.view(-1), winner_batch)
         policy_loss = -torch.mean(torch.sum(mcts_probs * F.log_softmax(policy_logits,dim=1), 1))
 
-        loss = value_loss + policy_loss
+        loss = value_loss + policy_loss # TODO？能否输出各自损失？能否各自backward
         # backward and optimize
         loss.backward()
         self.optimizer.step()
