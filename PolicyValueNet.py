@@ -17,6 +17,7 @@ def set_learning_rate(optimizer, lr):
         param_group['lr'] = lr
 
 class ConvBlock(nn.Module):
+    '''Convolutional Block'''
     def __init__(self, in_channels=4, out_channels=256):
         super(ConvBlock, self).__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=1)
@@ -30,6 +31,7 @@ class ConvBlock(nn.Module):
         return out
 
 class ResidualBlock(nn.Module):
+    '''Residual Block'''
     def __init__(self, out_channels=128): # input_channels=output_channels
         super(ResidualBlock, self).__init__()
         self.conv1 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1)
@@ -54,6 +56,7 @@ class ResidualBlock(nn.Module):
 
 
 class ResNet(nn.Module):
+    '''Full ResNet According to the paper'''
     def __init__(self, board_width, board_height, in_channels=4, out_channels=128):
         super(ResNet, self).__init__()
         self.board_width = board_width
@@ -118,7 +121,7 @@ class ResNet(nn.Module):
 
 
 class SimpleNet(nn.Module):
-    """policy-value network module"""
+    """Only Conv Layers"""
 
     def __init__(self, board_width, board_height):
         super(SimpleNet, self).__init__()
@@ -161,7 +164,7 @@ class SimpleNet(nn.Module):
 
 
 class SimpleResNet(nn.Module):
-    """policy-value network module"""
+    """Add One Residual Block based on SimpleNet """
 
     def __init__(self, board_width, board_height):
         super(SimpleResNet, self).__init__()
@@ -200,6 +203,7 @@ class SimpleResNet(nn.Module):
 
     def __str__(self):
         return "simple_resnet"
+
 
 class PolicyValueNet():
     """policy-value network wrapper """
@@ -284,6 +288,7 @@ class PolicyValueNet():
         # calc policy entropy, for monitoring only，- sum (p*logp)
         log_policy_output = F.log_softmax(policy_logits, dim=1) # 为了防止手动处理log时p负数问题，故先调用库函数
         entropy = -torch.mean(torch.sum(torch.exp(log_policy_output) * log_policy_output, 1))
+
 
         return loss.data[0], entropy.data[0]
 

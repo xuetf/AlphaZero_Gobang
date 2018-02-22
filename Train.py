@@ -26,8 +26,10 @@ class TrainPipeline():
         self.board = Board(width=self.board_width, height=self.board_height, n_in_row=self.n_in_row)
         self.game = Game(self.board)
         # training params
-        self.learn_rate = 1e-3
+        self.learn_rate = 1e-6
         self.lr_multiplier = 1.0  # adaptively adjust the learning rate based on KL
+        self.lr_decay_per_iterations = 100 # learning rate decay after how many iterations
+        self.lr_decay_speed = 10 # learning rate decay speed
         self.temp = 1.0  # the temperature param
         self.n_playout = 400  # num of simulations for each move
         self.c_puct = 5
@@ -37,7 +39,7 @@ class TrainPipeline():
         self.play_batch_size = 3  # how many games of each self-play epoch
         self.epochs = 5  # num of train_steps for each update
         self.is_adjust_lr = True # whether dynamic changing lr
-        self.kl_targ = 0.025  # KL散度量，用于early stop
+        self.kl_targ = 0.025  # KL，用于early stop
         self.check_freq = 50
         self.game_batch_num = 1500
         self.best_win_ratio = 0.0
@@ -106,8 +108,8 @@ class TrainPipeline():
 
 
     def adjust_learning_rate_2(self, iteration):
-        if (iteration+1) % 200 == 0:
-            self.lr_multiplier /= 10
+        if (iteration+1) % self.lr_decay_per_iterations == 0:
+            self.lr_multiplier /= self.lr_decay_speed
         print ("lr:{}".format(self.learn_rate * self.lr_multiplier))
 
 
@@ -161,7 +163,7 @@ class TrainPipeline():
                 extend_data.append((equi_state, np.flipud(equi_mcts_prob).flatten(), winner))
         return extend_data
 
-    def save_model(self, win_ratio, epochs, prefix='lr_1e-3_200_decay_10_play_3_buffer_5000_'):
+    def save_model(self, win_ratio, epochs, prefix='lr_1e-6_continue_with_lr_1e-3_200_decay_10_play_3_'):
         # save
         net_params = self.policy_value_net.get_policy_param()  # get model params
         pickle.dump(net_params, open(root_data_file + prefix + "current_policy_{}_epochs_{}.model".format(self.policy_value_net, epochs), 'wb'),
@@ -206,5 +208,5 @@ class TrainPipeline():
 
 
 if __name__ == '__main__':
-    training_pipeline = TrainPipeline()
+    training_pipeline = TrainPipeline(init_model=root_data_file+"lr_1e-3_200_decay_10_play_3_buffer_5000_current_policy_simple_resnet_epochs_400.model")
     training_pipeline.run()
