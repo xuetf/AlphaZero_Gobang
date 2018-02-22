@@ -26,7 +26,7 @@ class TrainPipeline():
         self.board = Board(width=self.board_width, height=self.board_height, n_in_row=self.n_in_row)
         self.game = Game(self.board)
         # training params
-        self.learn_rate = 1e-6
+        self.learn_rate = 1e-7
         self.lr_multiplier = 1.0  # adaptively adjust the learning rate based on KL
         self.lr_decay_per_iterations = 100 # learning rate decay after how many iterations
         self.lr_decay_speed = 10 # learning rate decay speed
@@ -163,7 +163,7 @@ class TrainPipeline():
                 extend_data.append((equi_state, np.flipud(equi_mcts_prob).flatten(), winner))
         return extend_data
 
-    def save_model(self, win_ratio, epochs, prefix='lr_1e-6_continue_with_lr_1e-3_200_decay_10_play_3_'):
+    def save_model(self, win_ratio, epochs, prefix='lr_1e-7_continue_with_lr_1e-3_200_decay_10_play_3_'):
         # save
         net_params = self.policy_value_net.get_policy_param()  # get model params
         pickle.dump(net_params, open(root_data_file + prefix + "current_policy_{}_epochs_{}.model".format(self.policy_value_net, epochs), 'wb'),
