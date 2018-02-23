@@ -29,7 +29,7 @@ class TrainPipeline():
         self.learn_rate = 1e-3
         self.lr_multiplier = 1.0  # adaptively adjust the learning rate based on KL
         self.lr_decay_per_iterations = 100 # learning rate decay after how many iterations
-        self.lr_decay_speed = 10 # learning rate decay speed
+        self.lr_decay_speed = 5 # learning rate decay speed
         self.temp = 1.0  # the temperature param
         self.n_playout = 400  # num of simulations for each move
         self.c_puct = 5
@@ -37,7 +37,7 @@ class TrainPipeline():
         self.batch_size = 512  # mini-batch size for training
         self.data_buffer = deque(maxlen=self.buffer_size)
         self.play_batch_size = 3  # how many games of each self-play epoch
-        self.epochs = 5  # num of train_steps for each update
+        self.epochs = 1  # num of train_steps for each update
         self.is_adjust_lr = True # whether dynamic changing lr
         self.kl_targ = 0.025  # KL，用于early stop
         self.check_freq = 50
@@ -81,15 +81,17 @@ class TrainPipeline():
             old_probs, old_v = self.policy_value_net.predict_many(state_batch) # used for adjusting lr
 
         for i in range(self.epochs):
-            loss, entropy = self.policy_value_net.fit(state_batch, mcts_probs_batch, winner_batch,
+            loss_info = self.policy_value_net.fit(state_batch, mcts_probs_batch, winner_batch,
                                                       self.learn_rate * self.lr_multiplier)
         if self.is_adjust_lr:
             # adaptively adjust the learning rate
             # self.adjust_learning_rate(old_probs, old_v, state_batch, winner_batch)
             self.adjust_learning_rate_2(iteration)
 
-        print("loss:{}, entropy:{}".format(loss, entropy))
-        return loss, entropy
+        print("combined loss:{}, value loss:{}, policy loss:{}, entropy:{}".
+              format(loss_info['combined_loss'], loss_info['value_loss'], loss_info['policy_loss'], loss_info['entropy']))
+
+        return loss_info
 
 
     def adjust_learning_rate(self, old_probs, old_v, state_batch, winner_batch):
@@ -181,16 +183,14 @@ class TrainPipeline():
     def run(self):
         """run the training pipeline"""
         loss_records = []
-        entropy_records = []
         try:
             for i in range(self.game_batch_num):
                 self.self_play(self.play_batch_size) # big step 1
                 print("iteration i:{}, episode_len:{}, augmented_len:{}, current_buffer_len:{}".format(i + 1, self.episode_len, self.augmented_len, len(self.data_buffer)))
 
                 if len(self.data_buffer) > self.batch_size:
-                    loss, entropy = self.optimize(iteration=i) # big step 2
-                    loss_records.append(loss)
-                    entropy_records.append(entropy)
+                    loss_info = self.optimize(iteration=i) # big step 2
+                    loss_records.append(loss_info)
 
                 # check the performance of the current model，and save the model params
                 if (i + 1) % self.check_freq == 0:
@@ -200,8 +200,7 @@ class TrainPipeline():
 
                 # 每500轮保存下损失和熵
                 if  (i + 1) % 500 == 0:
-                    records = {"loss": loss_records, "entropy":entropy_records}
-                    pickle.dump(records, open(root_data_file+"loss_entropy_records.data", 'wb'),
+                    pickle.dump(loss_records, open(root_data_file+"loss_info_records.data", 'wb'),
                                 pickle.HIGHEST_PROTOCOL)
         except KeyboardInterrupt:
             print('\n\rquit')
