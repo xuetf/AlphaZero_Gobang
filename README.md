@@ -16,7 +16,7 @@ This is a AlphaZero Implementation of Gobang based on Pytorch.
 - Board.py: Board Class for Gobang
 - Game.py: Game for Gobang
 
-## Runing Script
+## Running Script
 ### Run on Linux Server
 nohup python -u Train.py > train.log 2>&1 &
 
