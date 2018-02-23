@@ -13,7 +13,7 @@ root_data_file = "data/"
 def run():
     n = 4
     width, height = 6, 6
-    model_file = root_data_file + 'current_policy_resnet_epochs_500.model'
+    model_file = root_data_file + 'resnet_6_6_4.model'
     try:
         board = Board(width=width, height=height, n_in_row=n)
         game = Game(board)
@@ -23,7 +23,7 @@ def run():
             policy_param = pickle.load(open(model_file, 'rb'))
         except:
             policy_param = pickle.load(open(model_file, 'rb'), encoding='bytes')  # To support python3
-        best_policy = PolicyValueNet(width, height, net_params=policy_param) # setup which Network to use
+        best_policy = PolicyValueNet(width, height, Network=ResNet, net_params=policy_param) # setup which Network to use based on the net_params
         mcts_player = AlphaZeroPlayer(best_policy.predict, c_puct=5,
                                  nplays=1000)  # set larger n_playout for better performance
 
