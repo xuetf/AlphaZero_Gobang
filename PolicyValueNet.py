@@ -208,16 +208,17 @@ class SimpleResNet(nn.Module):
 class PolicyValueNet():
     """policy-value network wrapper """
 
-    def __init__(self, board_width, board_height, net_params=None, use_gpu=False):
+    def __init__(self, board_width, board_height, net_params=None, Network=None, use_gpu=False):
+        if Network is None: Network = ResNet
         self.use_gpu = use_gpu
         self.board_width = board_width
         self.board_height = board_height
         self.l2_const = 1e-4  # coef of l2 penalty 
         # the policy value net module
         if self.use_gpu:
-            self.policy_value_net = ResNet(board_width, board_height).cuda()
+            self.policy_value_net = Network(board_width, board_height).cuda()
         else:
-            self.policy_value_net = ResNet(board_width, board_height)
+            self.policy_value_net = Network(board_width, board_height)
         self.optimizer = optim.Adam(self.policy_value_net.parameters(), weight_decay=self.l2_const)
 
         if net_params:
@@ -281,7 +282,7 @@ class PolicyValueNet():
         value_loss = F.mse_loss(value_output.view(-1), winner_batch)
         policy_loss = -torch.mean(torch.sum(mcts_probs * F.log_softmax(policy_logits,dim=1), 1))
 
-        loss = value_loss + policy_loss # TODO？能否输出各自损失？能否各自backward
+        loss = value_loss + policy_loss
         # backward and optimize
         loss.backward()
         self.optimizer.step()
