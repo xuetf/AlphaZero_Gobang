@@ -37,7 +37,7 @@ class TrainPipeline():
         self.batch_size = 512  # mini-batch size for training
         self.data_buffer = deque(maxlen=self.buffer_size)
         self.play_batch_size = 3  # how many games of each self-play epoch
-        self.epochs = 1  # num of train_steps for each update
+        self.epochs = 5  # num of train_steps for each update
         self.is_adjust_lr = True # whether dynamic changing lr
         self.kl_targ = 0.025  # KL，用于early stop
         self.check_freq = 50
