@@ -16,6 +16,13 @@ def set_learning_rate(optimizer, lr):
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
+# def adjust_learning_rate(optimizer, lr, epoch):
+#     """Sets the learning rate to the initial LR decayed by 10 after 150 and 225 epochs"""
+#     lr = lr * (0.1 ** (epoch // 150)) * (0.1 ** (epoch // 225))
+#     # log to TensorBoard
+#     for param_group in optimizer.param_groups:
+#         param_group['lr'] = lr
+
 class ConvBlock(nn.Module):
     '''Convolutional Block'''
     def __init__(self, in_channels=4, out_channels=256):
@@ -51,7 +58,6 @@ class ResidualBlock(nn.Module):
         out += x # skip connection that adds the input to the block
         out = self.relu2(out)
         return out
-
 
 
 
@@ -209,7 +215,7 @@ class PolicyValueNet():
     """policy-value network wrapper """
 
     def __init__(self, board_width, board_height, net_params=None, Network=None, use_gpu=False):
-        if Network is None: Network = ResNet
+        if Network is None: Network = SimpleNet
         self.use_gpu = use_gpu
         self.board_width = board_width
         self.board_height = board_height
@@ -297,6 +303,7 @@ class PolicyValueNet():
             'value_loss':value_loss.data[0],
             'entropy': entropy.data[0]
         }
+
 
 
     def get_policy_param(self):

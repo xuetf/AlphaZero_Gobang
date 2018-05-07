@@ -18,10 +18,13 @@ This is a AlphaZero Implementation of Gobang based on Pytorch.
 
 ## Running Script
 ### Run on Linux Server
-nohup python -u Train.py > train.log 2>&1 &
+nohup python -u Train.py > simpleres_train.log 2>&1 &
 
 ### Download the trained model
-scp root@139.199.21.83:/usr/local/workspace/AlphaZero_Gobang/data/current_policy_resnet_epochs_500.model /Users/xuetf/Downloads
+scp root@139.199.21.83:/usr/local/workspace/AlphaZero_Gobang/data/current_policy_resnet_epochs_1500.model /Users/xuetf/Downloads
+
+### Upload -P big!!!
+scp -P 8381 local_file_path root@139.199.21.83:/root/
 
 
 ## Reference

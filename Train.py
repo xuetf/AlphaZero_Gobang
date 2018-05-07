@@ -11,7 +11,7 @@ import pickle
 from collections import defaultdict, deque
 from Game import Game
 from Board import Board
-from PolicyValueNet import PolicyValueNet  # Pytorch
+from PolicyValueNet import *  # Pytorch
 from AlphaZeroPlayer import AlphaZeroPlayer
 from RolloutPlayer import RolloutPlayer
 
@@ -45,14 +45,17 @@ class TrainPipeline():
         self.best_win_ratio = 0.0
         # num of simulations used for the pure mcts, which is used as the opponent to evaluate the trained policy
         self.pure_mcts_playout_num = 1000
+        self.network = ResNet  #the type of network
+
+        policy_param = None
         if init_model:
             print ('init model')
             # start training from an initial policy-value net
-            policy_param = pickle.load(open(init_model, 'rb'))
-            self.policy_value_net = PolicyValueNet(self.board_width, self.board_height, net_params=policy_param)
-        else:
-            # start training from a new policy-value net
-            self.policy_value_net = PolicyValueNet(self.board_width, self.board_height)
+            policy_param = pickle.load(open(init_model, 'rb')) # resume
+
+        self.policy_value_net = PolicyValueNet(self.board_width, self.board_height, net_params=policy_param,
+                                               Network=self.network)
+
         self.mcts_player = AlphaZeroPlayer(self.policy_value_net.predict, c_puct=self.c_puct,
                                            nplays=self.n_playout, is_selfplay=True)
 
@@ -85,8 +88,8 @@ class TrainPipeline():
                                                       self.learn_rate * self.lr_multiplier)
         if self.is_adjust_lr:
             # adaptively adjust the learning rate
-            # self.adjust_learning_rate(old_probs, old_v, state_batch, winner_batch)
-            self.adjust_learning_rate_2(iteration)
+            self.adjust_learning_rate(old_probs, old_v, state_batch, winner_batch)
+            #self.adjust_learning_rate_2(iteration)
 
         print("combined loss:{}, value loss:{}, policy loss:{}, entropy:{}".
               format(loss_info['combined_loss'], loss_info['value_loss'], loss_info['policy_loss'], loss_info['entropy']))
@@ -95,7 +98,10 @@ class TrainPipeline():
 
 
     def adjust_learning_rate(self, old_probs, old_v, state_batch, winner_batch):
-        '''adjust learning rate based on KL'''
+        '''
+        reference paper: PPO:Proximal Policy Optimization
+        adjust learning rate based on KL
+        '''
         new_probs, new_v = self.policy_value_net.predict_many(state_batch)
         kl = np.mean(np.sum(old_probs * (np.log(old_probs + 1e-10) - np.log(new_probs + 1e-10)), axis=1))  # KL散度，相对熵
         if kl > self.kl_targ * 2 and self.lr_multiplier > 0.1:  # kl增大，收敛不好，减小学习率
@@ -207,5 +213,5 @@ class TrainPipeline():
 
 
 if __name__ == '__main__':
-    training_pipeline = TrainPipeline()
+    training_pipeline = TrainPipeline(init_model=None)
     training_pipeline.run()

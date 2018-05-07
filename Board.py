@@ -68,6 +68,7 @@ class Board(object):
 
 
     def has_a_winner(self):
+        '''判断是否有获胜者'''
         width = self.width
         height = self.height
         states = self.states
@@ -102,7 +103,7 @@ class Board(object):
 
 
     def game_end(self):
-        """Check whether the game is ended or not"""
+        """Check whether the game is ended or not，产生获胜者或平局"""
         win, winner = self.has_a_winner()
         if win:
             return True, winner # 决出胜负则返回获胜者

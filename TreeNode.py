@@ -4,12 +4,12 @@ import numpy as np
 
 class TreeNode(object):
     def __init__(self, parent, prior_p):
-        self._parent = parent
-        self._children = {}  # a map from action to TreeNode
-        self._n_visits = 0
-        self._Q = 0
-        self._u = 0
-        self._P = prior_p
+        self._parent = parent # 父节点
+        self._children = {}  # 子节点，a map from action to TreeNode
+        self._n_visits = 0 # 访问次数
+        self._Q = 0 # Q值
+        self._u = 0 # bonus，根据先验概率和访问次数计算
+        self._P = prior_p # 先验概率，由价值网络得到
 
     def expand(self, action_priors):
         """Expand tree by creating new children.
@@ -37,7 +37,7 @@ class TreeNode(object):
         epsilon -- the fraction of the prior probability, and 1-epsilon is the corresponding dirichlet noise fraction
         alpha -- the parameter of dirichlet noise
         """
-        noise = np.random.dirichlet([alpha])
+        noise = np.random.dirichlet([alpha])[0] # 添加噪声，目前噪声比例epsilon=0,即，不使用噪声
         self._u = c_puct * ((1-epsilon) * self._P + epsilon * noise) * \
                   np.sqrt(self._parent._n_visits) / (1 + self._n_visits)
         return self._Q + self._u
@@ -51,7 +51,7 @@ class TreeNode(object):
 
         self._n_visits += 1
         # Update Q, a running average of values for all visits.
-        # 这一步合并了W，Q, 推导如下：
+        # 这一步合并了W，Q, (参见AlphaGoZero论文方法论部分)推导如下：
         # W = W_old + leaf_value; Q_old = W_old / (n-1) => W_old = (n-1)*Q_old; Q = W/n
         # Q = W/n=(W_old + leaf_value)/n = ((n-1)*Q_old+leaf_value)/n
         #   = (n*Q_old-Q_old+leaf_value)/n = Q_old + (leaf_value-Q_old)/n
