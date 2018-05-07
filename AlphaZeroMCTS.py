@@ -2,6 +2,7 @@
 from MCTS import MCTS
 import numpy as np
 def softmax(x):
+    '''防止数值溢出, 减去一个值，不改变最终的大小'''
     probs = np.exp(x - np.max(x))
     probs /= np.sum(probs)
     return probs
@@ -27,11 +28,14 @@ class AlphaZeroMCTS(MCTS):
         return is_end, action_probs, leaf_value
 
     def _play(self, temp=1e-3):
-        # calc the move probabilities based on the visit counts at the root node
+        '''
+        calc the move probabilities based on the visit counts at the root node
+        temp: 温度参数,见论文
+        '''
         act_visits = [(act, node._n_visits) for act, node in self._root._children.items()]
         acts, visits = zip(*act_visits)
 
-        pi = softmax(1.0 / temp * np.log(np.array(visits) + 1e-10))  # 计算概率分布跟论文不一样 TODO
+        pi = softmax(1.0 / temp * np.log(np.array(visits) + 1e-10))
         # pi = np.power(visits, 1/temp)
         # pi = pi / np.sum(pi * 1.0)
 

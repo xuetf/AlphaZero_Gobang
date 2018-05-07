@@ -53,21 +53,25 @@ class TrainPipeline():
             # start training from an initial policy-value net
             policy_param = pickle.load(open(init_model, 'rb')) # resume
 
+        # Network wrapper
         self.policy_value_net = PolicyValueNet(self.board_width, self.board_height, net_params=policy_param,
                                                Network=self.network)
-
+        # 传入policy_value_net的predict方法，神经网络辅助MCTS搜索过程
         self.mcts_player = AlphaZeroPlayer(self.policy_value_net.predict, c_puct=self.c_puct,
                                            nplays=self.n_playout, is_selfplay=True)
 
 
 
     def self_play(self, n_games=1):
-        """collect self-play data for training"""
+        """
+        collect self-play data for training
+        n_game: 自我对弈n_game局后，再更新网络
+        """
         self.episode_len = 0
         self.augmented_len = 0
         for i in range(n_games):
             winner, play_data, episode_len = self.game.start_self_play_game(self.mcts_player, temp=self.temp)
-            self.episode_len += episode_len
+            self.episode_len += episode_len # episode_len每局下的回合数
             # augment the data
             play_data = self.augment_data(play_data)
             self.augmented_len += len(play_data)
@@ -116,6 +120,7 @@ class TrainPipeline():
 
 
     def adjust_learning_rate_2(self, iteration):
+        '''衰减法'''
         if (iteration+1) % self.lr_decay_per_iterations == 0:
             self.lr_multiplier /= self.lr_decay_speed
         print ("lr:{}".format(self.learn_rate * self.lr_multiplier))
