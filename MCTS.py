@@ -82,9 +82,10 @@ class MCTS(object):
                 Returns:
                 the available actions and the corresponding probabilities
                 """
+        # The slowest section!!!! how to speed up!!
         for n in range(self._nplays):
-            state_copy = copy.deepcopy(state) # key!!!
-            self._search(state_copy) # the reference will be changed
+            state_copy = copy.deepcopy(state) # key!!!, can't change the state object
+            self._search(state_copy) # the state_copy reference will be changed
 
         return self._play(temp) # override for different child class
 

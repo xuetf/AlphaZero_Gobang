@@ -50,9 +50,7 @@ class TrainPipeline():
     def optimize(self, iteration=0):
         """update the policy-value net"""
         mini_batch = random.sample(self.config.data_buffer, self.config.batch_size)
-        state_batch = [data[0] for data in mini_batch]
-        mcts_probs_batch = [data[1] for data in mini_batch]
-        winner_batch = [data[2] for data in mini_batch]
+        state_batch, mcts_probs_batch, winner_batch = list(zip(*mini_batch))
 
         if self.config.is_adjust_lr:
             old_probs, old_v = self.policy_value_net.predict_many(state_batch) # used for adjusting lr
@@ -65,7 +63,7 @@ class TrainPipeline():
             self.adjust_learning_rate(old_probs, old_v, state_batch, winner_batch)
             #self.adjust_learning_rate_2(iteration)
 
-        print("combined loss:{}, value loss:{}, policy loss:{}, entropy:{}".
+        print("combined loss:{0:.5f}, value loss:{1:.5f}, policy loss:{2:.5f}, entropy:{3:.5f}".
               format(loss_info['combined_loss'], loss_info['value_loss'], loss_info['policy_loss'], loss_info['entropy']))
 
         return loss_info
@@ -85,7 +83,7 @@ class TrainPipeline():
         explained_var_old = 1 - np.var(np.array(winner_batch) - old_v.flatten()) / np.var(np.array(winner_batch))
         explained_var_new = 1 - np.var(np.array(winner_batch) - new_v.flatten()) / np.var(np.array(winner_batch))
 
-        print("kl:{:.5f},lr:{},explained_var_old:{:.3f},explained_var_new:{:.3f}".format(
+        print("kl:{:.5f},lr:{:.7f},explained_var_old:{:.3f},explained_var_new:{:.3f}".format(
                 kl, self.config.learn_rate * self.config.lr_multiplier, explained_var_old, explained_var_new))
 
 
@@ -189,6 +187,5 @@ class TrainPipeline():
 
 if __name__ == '__main__':
     #config = pickle.load(open('config-epochs-{0}-{1:.2f}.pkl'.format(4, 0.800),'rb'))
-    config = None
     training_pipeline = TrainPipeline(config=None)
     training_pipeline.run()
