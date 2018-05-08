@@ -153,7 +153,7 @@ class TrainPipeline():
         if win_ratio > self.config.best_win_ratio:
             print("New best policy!!!!!!!!")
             self.config.best_win_ratio = win_ratio
-            pickle.dump(self.config, open("config-epochs-{0}-{1:.2f}.pkl".format(epochs,win_ratio), 'wb'))
+            pickle.dump(self.config, open("tmp/config-epochs-{0}-{1:.2f}.pkl".format(epochs,win_ratio), 'wb'))
 
             if self.config.best_win_ratio == 1.0 and self.config.pure_mcts_playout_num < 5000:
                 self.config.pure_mcts_playout_num += 1000  # 增强
