@@ -37,7 +37,8 @@ class Board(object):
         if (len(loc) != 2):
             return -1
         move = loc[0] * self.width + loc[1]
-        if (move not in range(self.width * self.height)):
+        #if (move not in range(self.width * self.height)):
+        if loc[0] < 0 or loc[0] >= self.width or loc[1] < 0 or loc[1] >= self.height:
             return -1
         return move
 
