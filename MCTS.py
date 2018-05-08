@@ -5,11 +5,11 @@ import copy
 class MCTS(object):
     def __init__(self, nplays=1000, c_puct=5.0, epsilon=0, alpha=0.3, is_selfplay=False):
         self._root = TreeNode(None, 1.0)
-        self._nplays = nplays
-        self._c_puct = c_puct
-        self._epsilon = epsilon
-        self._alpha = alpha
-        self._is_selfplay = is_selfplay
+        self._nplays = nplays # number of plays of one simulation
+        self._c_puct = c_puct # a number controlling the relative impact of values, Q, and P
+        self._epsilon = epsilon # the ratio of dirichlet noise
+        self._alpha = alpha # dirichlet noise parameter
+        self._is_selfplay = is_selfplay # whether used to selfplay
 
     def _search(self, state):
         """Run a single search from the root to the leaf, getting a value at the leaf and
@@ -24,7 +24,7 @@ class MCTS(object):
                 break
             # Greedily select next move.
             if self._is_selfplay: # add noise when training
-                epsilon = self._epsilon if node == self._root else 0 # root add dirichlet
+                epsilon = self._epsilon if node == self._root else 0 # only root add dirichlet
             else:
                 epsilon = 0
             action, node = node.select(self._c_puct, epsilon, self._alpha) # MCTS of SELECT step
@@ -34,18 +34,19 @@ class MCTS(object):
         # tuples p and also a score v in [-1, 1] for the current player.
         is_end, pi, value = self._evaluate(state) # MCTS Of the EVALUATE step
 
-        if not is_end: #未结束则扩展
-            node.expand(pi) # MCTS of the EXPAND step
+        if not is_end: # if not end then expand
+            node.expand(pi) # MCTS of the [EXPAND] step
 
         # Update value and visit count of nodes in this traversal.
-        node.backup(-value) # MCTS of the BACKUP step
+        node.backup(-value) # MCTS of the [BACKUP] step
 
 
 
     def _evaluate(self, state):
         '''
         Template Method, Override for different child class
-        MCTS of the EVALUATE Step
+        MCTS of the [EVALUATE] Step
+        Return the move probabilities of each available action and the evaluation value of winning
         '''
         raise NotImplementedError
 
@@ -54,14 +55,18 @@ class MCTS(object):
     def _play(self, temp=1e-3):
         '''
         Template Method, Override for different child class
-        MCTS of the PLAY Step
+        MCTS of the [PLAY] Step
+        Return the final action
         '''
         raise NotImplementedError
 
 
     def reuse(self, last_move):
-        """Step forward in the tree, keeping everything we already know about the subtree.
-                """
+        """
+        Step forward in the tree, keeping everything we already know about the subtree.
+        if self-play then update the root node and reuse the search tree, speeding next simulation
+        else reset the root
+        """
         if last_move in self._root._children:
             self._root = self._root._children[last_move]
             self._root._parent = None

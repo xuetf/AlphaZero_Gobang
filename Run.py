@@ -10,6 +10,9 @@ import pickle
 
 root_data_file = "data/"
 
+'''
+Play Game between Human and AlphaZero
+'''
 def run():
     n = 4
     width, height = 6, 6

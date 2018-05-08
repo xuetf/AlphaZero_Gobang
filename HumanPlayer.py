@@ -7,6 +7,7 @@ class HumanPlayer(Player):
         Player.__init__(self, player_no, player_name)
 
     def play(self, board):
+        '''play based on human input'''
         try:
             location = input("Your move: ")
             if isinstance(location, str):

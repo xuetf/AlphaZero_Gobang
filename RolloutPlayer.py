@@ -2,6 +2,9 @@
 from Player import Player
 from RolloutMCTS import RolloutMCTS
 
+'''
+Random Rollout Player using Random Guided MCTS Searching
+'''
 class RolloutPlayer(Player):
     def __init__(self, nplays=1000, c_puct=5, player_no=0, player_name=""):
         Player.__init__(self, player_no, player_name)

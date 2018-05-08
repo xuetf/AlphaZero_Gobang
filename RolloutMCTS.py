@@ -4,9 +4,11 @@ import numpy as np
 from operator import itemgetter
 import copy
 
-
+'''
+Random Rollout MCTS,
+Every step of simulation, the action is randomly chosen
+'''
 class RolloutMCTS(MCTS):
-    '''随机快速走棋MCTS,模拟过程每一步是随机产生的'''
     def __init__(self, nplays=1000, c_puct=5.0, epsilon=0, alpha=0.3, limit=1000):
         MCTS.__init__(self, nplays, c_puct, epsilon, alpha)
         self._limit = limit

@@ -170,7 +170,7 @@ class SimpleNet(nn.Module):
 
 
 class SimpleResNet(nn.Module):
-    """Add One Residual Block based on SimpleNet """
+    """Add Only One Residual Block based on SimpleNet """
 
     def __init__(self, board_width, board_height):
         super(SimpleResNet, self).__init__()
@@ -211,8 +211,9 @@ class SimpleResNet(nn.Module):
         return "simple_resnet"
 
 
+
+"""policy-value network wrapper """
 class PolicyValueNet():
-    """policy-value network wrapper """
 
     def __init__(self, board_width, board_height, net_params=None, Network=None, use_gpu=False):
         if Network is None: Network = SimpleNet

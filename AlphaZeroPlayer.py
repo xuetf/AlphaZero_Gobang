@@ -13,6 +13,7 @@ class AlphaZeroPlayer(Player):
 
 
     def reset_player(self):
+        '''reset, reconstructing the MCTS Tree for next simulation'''
         self.mcts.reuse(-1)
 
     def play(self, board, temp=1e-3, explore_step=30, return_prob=False):
@@ -24,7 +25,7 @@ class AlphaZeroPlayer(Player):
             move_probs[list(acts)] = probs
 
             if self._is_selfplay:
-                # add Dirichlet Noise for exploration (needed for self-play training)
+                # add Dirichlet Noise for exploration (only needed for self-play training)
                 move = np.random.choice(acts, p=(1-0.2) * probs + 0.2 * np.random.dirichlet(0.3 * np.ones(len(probs))))
                 #move = np.random.choice(acts, p=probs)
                 self.mcts.reuse(move)  # update the root node and reuse the search tree

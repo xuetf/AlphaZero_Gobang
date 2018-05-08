@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-
+'''
+Node of MCTS Searching Tree
+'''
 class TreeNode(object):
     def __init__(self, parent, prior_p):
-        self._parent = parent # 父节点
-        self._children = {}  # 子节点，a map from action to TreeNode
-        self._n_visits = 0 # 访问次数
-        self._Q = 0 # Q值
-        self._u = 0 # bonus，根据先验概率和访问次数计算
-        self._P = prior_p # 先验概率，由价值网络得到
+        self._parent = parent # parent node
+        self._children = {}  # child nodes，a map from action to TreeNode
+        self._n_visits = 0 # visit count
+        self._Q = 0 # Q Value
+        self._u = 0 # bonus，calculated based on the visit count and prior probability
+        self._P = prior_p # prior probability,calculated based on the Network
 
     def expand(self, action_priors):
         """Expand tree by creating new children.
@@ -32,6 +34,7 @@ class TreeNode(object):
     def _get_value(self, c_puct, epsilon=0, alpha=0.3):
         """Calculate and return the value for this node: a combination of leaf evaluations, Q, and
         this node's prior adjusted for its visit count, u
+
         c_puct -- a number in (0, inf) controlling the relative impact of values, Q, and
             prior probability, P, on this node's score.
         epsilon -- the fraction of the prior probability, and 1-epsilon is the corresponding dirichlet noise fraction

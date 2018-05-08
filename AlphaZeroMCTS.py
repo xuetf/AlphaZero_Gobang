@@ -20,7 +20,7 @@ class AlphaZeroMCTS(MCTS):
         # 若对局结束，直接根据胜负调整评估。policy evaluation
         is_end, winner = state.game_end()
         if is_end:
-            if winner == -1:  # tie, 平局
+            if winner == -1:  # tie
                 leaf_value = 0.0
             else:
                 leaf_value = 1.0 if winner == state.get_current_player() else -1.0

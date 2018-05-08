@@ -22,7 +22,7 @@ class Board(object):
 
     def move2loc(self, move):
         """
-        3*3 board's moves like:
+        3*3 board's moves like this:
         6 7 8
         3 4 5
         0 1 2
@@ -33,6 +33,7 @@ class Board(object):
         return [h, w]
 
     def loc2move(self, loc):
+        '''transfer the loc tuple to id of the moving'''
         if (len(loc) != 2):
             return -1
         move = loc[0] * self.width + loc[1]
@@ -52,12 +53,12 @@ class Board(object):
             moves, players = np.array(list(zip(*self.states.items())))
             move_curr = moves[players == self.current_player]
             move_oppo = moves[players != self.current_player]
-            square_state[0][self.move2loc(move_curr)] = 1.0
-            square_state[1][self.move2loc(move_oppo)] = 1.0
-            square_state[2][self.last_move // self.width, self.last_move % self.height] = 1.0  # last move indication
+            square_state[0][self.move2loc(move_curr)] = 1.0 # first feature map: self moves
+            square_state[1][self.move2loc(move_oppo)] = 1.0 # second feature map: oppo moves
+            square_state[2][self.last_move // self.width, self.last_move % self.height] = 1.0  # third feature map, last move indication
         if len(self.states) % 2 == 0:
-            square_state[3][:, :] = 1.0  # 代表是否是player 1，1是player 1；0是player 2;
-        return square_state[:, ::-1, :]  # 第二维倒序，行倒序,上下翻转
+            square_state[3][:, :] = 1.0  # fourth feature map, current player is player 1?  1 for player 1；0 for player 2;
+        return square_state[:, ::-1, :]  # the second dimension for row reversed
 
 
     def do_move(self, move):
@@ -68,7 +69,6 @@ class Board(object):
 
 
     def has_a_winner(self):
-        '''判断是否有获胜者'''
         width = self.width
         height = self.height
         states = self.states
@@ -84,30 +84,30 @@ class Board(object):
             player = states[m]
 
             if (w in range(width - n + 1) and
-                len(set(states.get(i, -1) for i in range(m, m + n))) == 1): #横着全是同一种颜色的棋
+                len(set(states.get(i, -1) for i in range(m, m + n))) == 1): # horizon
                 return True, player
 
             if (h in range(height - n + 1) and
-                len(set(states.get(i, -1) for i in range(m, m + n * width, width))) == 1):#竖着全是同一种颜色的棋
+                len(set(states.get(i, -1) for i in range(m, m + n * width, width))) == 1): # vertical
                 return True, player
 
             if (w in range(width - n + 1) and h in range(height - n + 1) and
-                len(set(states.get(i, -1) for i in range(m, m + n * (width + 1), width + 1))) == 1):#右对角线
+                len(set(states.get(i, -1) for i in range(m, m + n * (width + 1), width + 1))) == 1): # right diagonal
                 return True, player
 
             if (w in range(n - 1, width) and h in range(height - n + 1) and
-                len(set(states.get(i, -1) for i in range(m, m + n * (width - 1), width - 1))) == 1):#左对角线
+                len(set(states.get(i, -1) for i in range(m, m + n * (width - 1), width - 1))) == 1): # left diagonal
                 return True, player
 
         return False, -1
 
 
     def game_end(self):
-        """Check whether the game is ended or not，产生获胜者或平局"""
+        """Check whether the game is ended or not, win or tie"""
         win, winner = self.has_a_winner()
         if win:
-            return True, winner # 决出胜负则返回获胜者
-        elif not len(self.availables):  # 平局，可走位置为0。
+            return True, winner # has a winner
+        elif not len(self.availables):  # tie，no available location。
             return True, -1
         return False, -1
 
