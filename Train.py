@@ -186,6 +186,7 @@ class TrainPipeline():
 
 
 if __name__ == '__main__':
-    config = pickle.load(open('tmp/tmp_0508/config-epochs-{0}-{1:.2f}.pkl'.format(50, 0.90),'rb'))
+    config = pickle.load(open('tmp/config-epochs-{0}-{1:.2f}.pkl'.format(50, 0.90),'rb'))
+    config = None
     training_pipeline = TrainPipeline(config=config)
     training_pipeline.run()

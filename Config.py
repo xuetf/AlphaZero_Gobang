@@ -25,7 +25,7 @@ class Config:
         self.per_game_opt_times = 5  # num of train_steps for each update
         self.is_adjust_lr = True  # whether dynamic changing lr
         self.kl_targ = 0.02  # KL，用于early stop
-        self.check_freq = 50  # frequency of checking the performance of current model and saving model
+        self.check_freq = 5  # frequency of checking the performance of current model and saving model
         self.start_game_num = 0  # the starting num of training
         self.game_batch_num = 1500
         self.best_win_ratio = 0.0
