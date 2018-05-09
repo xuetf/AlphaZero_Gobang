@@ -3,6 +3,7 @@ import pickle
 from Config import *
 from AlphaZeroPlayer import AlphaZeroPlayer
 
+
 def load_config(file_name, only_load_param=True):
     '''
     :param

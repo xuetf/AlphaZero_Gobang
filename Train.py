@@ -152,11 +152,14 @@ class TrainPipeline():
                 extend_data.append((equi_state, np.flipud(equi_mcts_prob).flatten(), winner))
         return extend_data
 
+
     def save_model(self, win_ratio, epochs):
         # save model if necessary
         # if opponent is Rollout Player, then win_ratio > best_win_pure_so_far
+        # if opponent is the Strongest Rollout Player, then win_ratio must be 1.0
         # else win_ratio >= win_ratio_alphazero
         if (self.config.evaluate_opponent == 'Pure' and win_ratio > self.config.best_win_pure_so_far) or \
+                (self.config.evaluate_opponent == 'Pure' and self.config.pure_mcts_playout_num == 5000 and win_ratio == 1.0) or \
                 (self.config.evaluate_opponent == 'AlphaZero' and win_ratio >= self.config.win_ratio_alphazero):
 
             print("New best policy!!!!!!!!")
@@ -182,8 +185,9 @@ class TrainPipeline():
 
         # current model continuously win(or tie) against the strongest pure mcts player(mcts_play_out>=5000)
         if self.config.evaluate_opponent == 'Pure' and self.config.pure_mcts_playout_num >= 5000 \
-                and win_ratio >= self.config.best_win_pure_so_far:
+                and win_ratio >= self.config.best_win_pure_so_far: # note: add equal
             self.config.continuous_win_pure_times += 1
+
 
         # change the opponent
         if self.config.continuous_win_pure_times  >= self.config.change_opponent_continuous_times:
