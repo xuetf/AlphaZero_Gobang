@@ -148,7 +148,7 @@ class TrainPipeline():
         # save
         self.config.policy_param = self.policy_value_net.get_policy_param()  # get model params
 
-        if win_ratio > self.config.best_win_ratio:
+        if win_ratio >= self.config.best_win_ratio:
             print("New best policy!!!!!!!!")
             self.config.best_win_ratio = win_ratio
             pickle.dump(self.config, open("tmp/config-epochs-{0}-{1:.2f}.pkl".format(epochs,win_ratio), 'wb'))
