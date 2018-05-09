@@ -41,6 +41,16 @@ class Game(object):
                     print('_'.center(8), end='')
             print('\r\n\r\n')
 
+    def set_player_symbol(self, who_first):
+        '''show board, set player symbol X OR O'''
+        p1, p2 = self.board.players
+        if self.board.players[who_first] == p1:
+            self.player1_symbol = "X"
+            self.player2_symbol = "O"
+        else:
+            self.player1_symbol = "O"
+            self.player2_symbol = "X"
+
 
     def start_game(self, player1, player2, who_first=0, is_shown=1):
         """
@@ -50,12 +60,8 @@ class Game(object):
         p1, p2 = self.board.players
         player1.set_player_no(p1)
         player2.set_player_no(p2)
-        if self.board.players[who_first] == p1:
-            self.player1_symbol = "X"
-            self.player2_symbol = "O"
-        else:
-            self.player1_symbol = "O"
-            self.player2_symbol = "X"
+        self.set_player_symbol(who_first)
+
         players = {p1: player1, p2: player2}
         if is_shown:
             self.graphic(self.board, player1, player2)
@@ -82,6 +88,8 @@ class Game(object):
         self.board.init_board()
         p1, p2 = self.board.players
         states, mcts_probs, current_players = [], [], []
+        if is_shown:
+            self.set_player_symbol(who_first=0)
         while(True):
             move, move_probs = player.play(self.board, temp=temp, return_prob=True)
             # store the data
