@@ -15,6 +15,7 @@ from PolicyValueNet import *  # Pytorch
 from AlphaZeroPlayer import AlphaZeroPlayer
 from RolloutPlayer import RolloutPlayer
 from Config import *
+from Util import *
 root_data_file = "data/"
 
 class TrainPipeline():
@@ -101,11 +102,18 @@ class TrainPipeline():
         """
         current_mcts_player = AlphaZeroPlayer(self.policy_value_net.predict, c_puct=self.config.c_puct,
                                               nplays=self.config.n_playout)
-        pure_mcts_player = RolloutPlayer(c_puct=5, nplays=self.config.pure_mcts_playout_num)  # 可以优化，评估的时候应该跟当前最强的战斗
+
+        if self.config.evaluate_opponent == 'Pure':
+            # opponent is rolloutplayer
+            opponent_mcts_player = RolloutPlayer(c_puct=5, nplays=self.config.pure_mcts_playout_num)
+        else:
+            # oppenent is AlphaZeroPlayer
+            opponent_mcts_player = load_current_best_player(self.config.cur_best_alphazero_store_filename)
+
         win_cnt = defaultdict(int)
         for i in range(n_games):
             print ("evaluate game %d" %i)
-            winner = self.config.game.start_game(current_mcts_player, pure_mcts_player, who_first=i % 2, is_shown=0)
+            winner = self.config.game.start_game(current_mcts_player, opponent_mcts_player, who_first=i % 2, is_shown=0)
             win_cnt[winner] += 1
         win_ratio = 1.0 * (win_cnt[1] + 0.5 * win_cnt[-1]) / n_games
         print("num_playouts:{}, win: {}, lose: {}, tie:{}".format(self.config.pure_mcts_playout_num, win_cnt[1], win_cnt[2],
@@ -144,18 +152,45 @@ class TrainPipeline():
                 extend_data.append((equi_state, np.flipud(equi_mcts_prob).flatten(), winner))
         return extend_data
 
-    def save_model(self, win_ratio, epochs, prefix=''):
-        # save
-        self.config.policy_param = self.policy_value_net.get_policy_param()  # get model params
+    def save_model(self, win_ratio, epochs):
+        # save model if necessary
+        # if opponent is Rollout Player, then win_ratio > best_win_pure_so_far
+        if (self.config.evaluate_opponent == 'Pure' and win_ratio > self.config.best_win_pure_so_far) or \
+                (self.config.evaluate_opponent == 'AlphaZero' and win_ratio >= self.config.win_ratio_alphazero):
 
-        if win_ratio >= self.config.best_win_ratio:
             print("New best policy!!!!!!!!")
-            self.config.best_win_ratio = win_ratio
-            pickle.dump(self.config, open("tmp/config-epochs-{0}-{1:.2f}.pkl".format(epochs,win_ratio), 'wb'))
+            # load network parameters
+            self.config.policy_param = self.policy_value_net.get_policy_param()  # get model params
 
-            if self.config.best_win_ratio == 1.0 and self.config.pure_mcts_playout_num < 5000:
-                self.config.pure_mcts_playout_num += 1000  # 增强
-                self.config.best_win_ratio = 0.0
+            self.config.cur_best_alphazero_store_filename = "tmp/epochs-{0}-opponent-{1}-win-{2:.2f}.pkl".format(epochs,
+                                                                                                                 self.config.evaluate_opponent,
+                                                                                                                 win_ratio)
+            pickle.dump(self.config, open(self.config.cur_best_alphazero_store_filename, 'wb'))
+
+
+        #---------------Adjust Opponent---------------------#
+        # First Make Rollout stronger(increase pure_mcts_playout_num)
+        # when RolloutPlayer is the strongest version(mcts_num=5000) but still loss self.config change_opponent_continuous_times Times,
+        # Then Change the opponent to AlphaZero Player
+
+        # if opponent is RolloutPlayer, Then make it Stronger!!
+        if self.config.evaluate_opponent =='Pure' and win_ratio > self.config.best_win_pure_so_far:
+            if win_ratio == 1.0 and self.config.pure_mcts_playout_num < 5000:
+                self.config.pure_mcts_playout_num += 1000  # stronger
+                self.config.best_win_pure_so_far = 0.0 # reset win_ratio
+
+        # current model continuously win(or tie) against the strongest pure mcts player(mcts_play_out>=5000)
+        if self.config.evaluate_opponent == 'Pure' and self.config.pure_mcts_playout_num >= 5000 \
+                and win_ratio >= self.config.best_win_pure_so_far:
+            self.config.continuous_win_pure_times += 1
+
+        # change the opponent
+        if self.config.continuous_win_pure_times  >= self.config.change_opponent_continuous_times:
+            self.config.evaluate_opponent = 'AlphaZero'
+
+
+
+
 
     def run(self):
         """run the training pipeline"""
@@ -186,6 +221,6 @@ class TrainPipeline():
 
 
 if __name__ == '__main__':
-    config = pickle.load(open('tmp/config-epochs-{0}-{1:.2f}.pkl'.format(270, 1.00),'rb')) # 无缝重启训练，加载保存的模型运行时数据
+    #config = pickle.load(open('tmp/config-epochs-{0}-{1:.2f}.pkl'.format(270, 1.00),'rb')) # 无缝重启训练，加载保存的模型运行时数据
     training_pipeline = TrainPipeline(config=None)
     training_pipeline.run()
