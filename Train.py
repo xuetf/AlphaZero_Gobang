@@ -105,9 +105,11 @@ class TrainPipeline():
 
         if self.config.evaluate_opponent == 'Pure':
             # opponent is rolloutplayer
+            print("Begin evaluation, Opponent is RolloutMCTSPlayer")
             opponent_mcts_player = RolloutPlayer(c_puct=5, nplays=self.config.pure_mcts_playout_num)
         else:
             # oppenent is AlphaZeroPlayer
+            print("Begin evaluation, Opponent is AlphaZeroMCTSPlayer")
             opponent_mcts_player = load_current_best_player(self.config.cur_best_alphazero_store_filename)
 
         win_cnt = defaultdict(int)
