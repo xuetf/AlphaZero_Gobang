@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 from MCTS import MCTS
 import numpy as np
-def softmax(x):
-    '''防止数值溢出, 减去一个值，不改变最终的大小'''
-    probs = np.exp(x - np.max(x))
-    probs /= np.sum(probs)
-    return probs
+from Util import softmax
+
 
 class AlphaZeroMCTS(MCTS):
     def __init__(self, policy_value_fn=None, nplays=1000, cpuct=5, epsilon=0, alpha=0.3, is_selfplay=False):

@@ -3,6 +3,11 @@ from  Game import *
 from PolicyValueNet import *
 import pickle
 from collections import deque
+
+# Global Variable
+root_data_file = "data/"
+tmp_data_file = "tmp/"
+
 class Config:
     def __init__(self):
         self.board_width = 6

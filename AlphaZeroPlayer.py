@@ -26,6 +26,7 @@ class AlphaZeroPlayer(Player):
 
             if self._is_selfplay:
                 # add Dirichlet Noise for exploration (only needed for self-play training)
+                # different from paper, in the paper, noise is added to the root of MCTS Tree
                 move = np.random.choice(acts, p=(1-0.2) * probs + 0.2 * np.random.dirichlet(0.3 * np.ones(len(probs))))
                 #move = np.random.choice(acts, p=probs)
                 self.mcts.reuse(move)  # update the root node and reuse the search tree
