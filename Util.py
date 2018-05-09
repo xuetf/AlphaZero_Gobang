@@ -39,8 +39,8 @@ def load_current_best_player(file_name):
                                  Network=config.network,
                                  net_params=config.policy_param)  # setup which Network to use based on the net_params
 
-    best_player = AlphaZeroPlayer(best_policy.predict, c_puct=config.c_puct, is_selfplay=False,
-                                  nplays=1200)  #increase nplays=1200, is_selfplay=True, add_noise_to_best_player, avoid the same play every game
+    best_player = AlphaZeroPlayer(best_policy.predict, c_puct=config.c_puct,
+                                  nplays=1200, add_noise=True)  #increase nplays=1200, add_noise=True, add_noise_to_best_player, avoid the same play every game
     return best_player
 
 
