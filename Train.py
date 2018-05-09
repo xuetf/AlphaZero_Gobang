@@ -186,6 +186,6 @@ class TrainPipeline():
 
 
 if __name__ == '__main__':
-    #config = pickle.load(open('tmp/config-epochs-{0}-{1:.2f}.pkl'.format(5, 0.90),'rb'))
+    config = pickle.load(open('tmp/config-epochs-{0}-{1:.2f}.pkl'.format(270, 1.00),'rb')) # 无缝重启训练，加载保存的模型运行时数据
     training_pipeline = TrainPipeline(config=None)
     training_pipeline.run()
