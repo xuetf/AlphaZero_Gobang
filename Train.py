@@ -191,6 +191,7 @@ class TrainPipeline():
 
         # change the opponent
         if self.config.continuous_win_pure_times  >= self.config.change_opponent_continuous_times:
+            print ('Change Opponent:AlphaZero')
             self.config.evaluate_opponent = 'AlphaZero'
 
 
