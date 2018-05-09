@@ -155,6 +155,7 @@ class TrainPipeline():
     def save_model(self, win_ratio, epochs):
         # save model if necessary
         # if opponent is Rollout Player, then win_ratio > best_win_pure_so_far
+        # else win_ratio >= win_ratio_alphazero
         if (self.config.evaluate_opponent == 'Pure' and win_ratio > self.config.best_win_pure_so_far) or \
                 (self.config.evaluate_opponent == 'AlphaZero' and win_ratio >= self.config.win_ratio_alphazero):
 
@@ -169,8 +170,8 @@ class TrainPipeline():
 
 
         #---------------Adjust Opponent---------------------#
-        # First Make Rollout stronger(increase pure_mcts_playout_num)
-        # when RolloutPlayer is the strongest version(mcts_num=5000) but still loss self.config change_opponent_continuous_times Times,
+        # Firstly, Make Rollout stronger(increase pure_mcts_playout_num)
+        # Secondly, when RolloutPlayer is the strongest version(mcts_num=5000) but still loss self.config change_opponent_continuous_times Times,
         # Then Change the opponent to AlphaZero Player
 
         # if opponent is RolloutPlayer, Then make it Stronger!!
