@@ -40,7 +40,8 @@ class TreeNode(object):
         epsilon -- the fraction of the prior probability, and 1-epsilon is the corresponding dirichlet noise fraction
         alpha -- the parameter of dirichlet noise
         """
-        noise = np.random.dirichlet([alpha])[0] # 添加噪声，目前噪声比例epsilon=0,即，不使用噪声
+        noise = 0
+        if epsilon > 0: noise = np.random.dirichlet([alpha])[0] # 添加噪声，目前噪声比例epsilon=0,即，不使用噪声
         self._u = c_puct * ((1-epsilon) * self._P + epsilon * noise) * \
                   np.sqrt(self._parent._n_visits) / (1 + self._n_visits)
         return self._Q + self._u
