@@ -185,7 +185,7 @@ class TrainPipeline():
 
         # current model continuously win(or tie) against the strongest pure mcts player(mcts_play_out>=5000)
         if self.config.evaluate_opponent == 'Pure' and self.config.pure_mcts_playout_num >= 5000 \
-                and win_ratio >= self.config.best_win_pure_so_far: # note: add equal
+                and win_ratio == 1.0: # note: add equal
             self.config.continuous_win_pure_times += 1
 
 
