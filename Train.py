@@ -15,6 +15,7 @@ from PolicyValueNet import *  # Pytorch
 from AlphaZeroPlayer import AlphaZeroPlayer
 from RolloutPlayer import RolloutPlayer
 from Config import *
+import argparse
 from Util import *
 root_data_file = "data/"
 
@@ -230,6 +231,13 @@ class TrainPipeline():
 
 
 if __name__ == '__main__':
-    config = pickle.load(open("tmp/epochs-{0}-opponent-{1}-win-{2:.2f}.pkl".format(360,'AlphaZero',0.60),'rb')) # 无缝重启训练，加载保存的模型运行时数据
+    parser = argparse.ArgumentParser(description='AlphaZero Training....')
+    parser.add_argument('--config', default=None, type=str,
+                        help='config files to resume training....')
+    args = parser.parse_args()
+    #config = "tmp/epochs-{0}-opponent-{1}-win-{2:.2f}.pkl".format(360, 'AlphaZero', 0.60)
+    config = None
+    if args.config:
+        config = pickle.load(open(args.config, 'rb')) # 无缝重启训练，加载保存的模型运行时数据
     training_pipeline = TrainPipeline(config=config)
     training_pipeline.run()
