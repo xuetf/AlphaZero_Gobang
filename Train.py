@@ -82,6 +82,7 @@ class TrainPipeline():
             self.config.lr_multiplier /= 1.5
         elif kl < self.config.kl_targ / 2 and self.config.lr_multiplier < 10:  # kl很小，说明收敛不错；提高学习率
             self.config.lr_multiplier *= 1.5
+
         explained_var_old = 1 - np.var(np.array(winner_batch) - old_v.flatten()) / np.var(np.array(winner_batch))
         explained_var_new = 1 - np.var(np.array(winner_batch) - new_v.flatten()) / np.var(np.array(winner_batch))
 
@@ -199,6 +200,24 @@ class TrainPipeline():
             self.config.evaluate_opponent = 'AlphaZero'
 
 
+    def check_loss_change(self):
+        '''
+        check loss change every self.config.check_freq steps
+        record the current minimum [mean loss of every self.config.check_freq steps]
+        if the mean loss of every self.config.check_freq steps don't decrease for twice times comparing to the current minimum
+        then decrease the learn_rate by half
+        '''
+        combined_loss_list = [loss['combined_loss'] for loss in self.config.loss_records]
+        if self.config.min_mean_loss_every_check_freq is None or \
+                combined_loss_list[-self.config.check_freq:] < self.config.min_mean_loss_every_check_freq:
+            self.config.min_mean_loss_every_check_freq = combined_loss_list[-self.config.check_freq:] # update
+            self.config.increase_mean_loss_times = 0 # reset to zero
+        else:
+            self.config.increase_mean_loss_times += 1
+
+        if self.config.increase_mean_loss_times >= self.config.adjust_lr_increase_loss_times:
+            self.config.learn_rate /= 2 # decrease lr by half
+            self.config.increase_mean_loss_times = 0 # reset again
 
 
 
@@ -223,6 +242,7 @@ class TrainPipeline():
                     print("current iteration: {}".format(i + 1))
                     win_ratio = self.evaluate() #big step 3
                     self.save_model(win_ratio, i+1)
+                    self.check_loss_change() # check loss, and adjust init lr if necessary
 
 
 

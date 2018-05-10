@@ -46,3 +46,6 @@ class Config:
         self.win_ratio_alphazero = 0.55 # if win ratio against previous best alphazero is larger than 0.55 then it is ok to save
         self.cur_best_alphazero_store_filename = None # the current best AlphaZero Player
         self.evaluate_opponent = 'Pure' # The opponent to evaluate. Pure Opponent at the beginning of training, when beat pure opponent many times, then change to Previous Best AlphaZero Player
+        self.min_mean_loss_every_check_freq = None # current minimum mean loss of every check_freq steps
+        self.increase_mean_loss_times = 0 # the time of increasing loss, used to adjust lr
+        self.adjust_lr_increase_loss_times = 3 # when the mean loss increase such times, then decrease lr by half
