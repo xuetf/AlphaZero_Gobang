@@ -297,7 +297,7 @@ class PolicyValueNet():
         log_policy_output = F.log_softmax(policy_logits, dim=1) # 为了防止手动处理log时p负数问题，故先调用库函数
         entropy = -torch.mean(torch.sum(torch.exp(log_policy_output) * log_policy_output, 1))
 
-
+        # entropy is equivalent to policy loss.
         return {
             'combined_loss':loss.data[0],
             'policy_loss': policy_loss.data[0],

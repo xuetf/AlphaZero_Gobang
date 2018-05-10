@@ -41,7 +41,7 @@ def run(config=None):
 
 
 if __name__ == '__main__':
-    config = load_config(file_name=tmp_data_file + 'epochs-300-opponent-Pure-win-1.00.pkl', only_load_param=False)
+    config = load_config(file_name=tmp_data_file + 'epochs-600-opponent-AlphaZero-win-0.60.pkl', only_load_param=False)
     run(config)
 
 
