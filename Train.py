@@ -208,16 +208,19 @@ class TrainPipeline():
         then decrease the learn_rate by half
         '''
         combined_loss_list = [loss['combined_loss'] for loss in self.config.loss_records]
+        last_check_freq_mean_loss = np.mean(combined_loss_list[-self.config.check_freq:])
         if self.config.min_mean_loss_every_check_freq is None or \
-                combined_loss_list[-self.config.check_freq:] < self.config.min_mean_loss_every_check_freq:
-            self.config.min_mean_loss_every_check_freq = np.mean(combined_loss_list[-self.config.check_freq:]) # update
+                last_check_freq_mean_loss < self.config.min_mean_loss_every_check_freq:
+            self.config.min_mean_loss_every_check_freq = last_check_freq_mean_loss # update
             self.config.increase_mean_loss_times = 0 # reset to zero
         else:
+            print('increase loss by {0:.4f}'.format(last_check_freq_mean_loss-self.config.min_mean_loss_every_check_freq))
             self.config.increase_mean_loss_times += 1
 
         if self.config.increase_mean_loss_times >= self.config.adjust_lr_increase_loss_times:
             self.config.learn_rate /= 2 # decrease lr by half
             self.config.increase_mean_loss_times = 0 # reset again
+            print('decrease lr by half, now init lr is {0:.5f}'.format(self.config.learn_rate))
 
 
 
