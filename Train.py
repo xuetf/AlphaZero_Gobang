@@ -210,7 +210,7 @@ class TrainPipeline():
         combined_loss_list = [loss['combined_loss'] for loss in self.config.loss_records]
         if self.config.min_mean_loss_every_check_freq is None or \
                 combined_loss_list[-self.config.check_freq:] < self.config.min_mean_loss_every_check_freq:
-            self.config.min_mean_loss_every_check_freq = combined_loss_list[-self.config.check_freq:] # update
+            self.config.min_mean_loss_every_check_freq = np.mean(combined_loss_list[-self.config.check_freq:]) # update
             self.config.increase_mean_loss_times = 0 # reset to zero
         else:
             self.config.increase_mean_loss_times += 1
