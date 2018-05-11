@@ -29,6 +29,7 @@ class Config:
         self.play_batch_size = 1  # how many games of each self-play epoch
         self.per_game_opt_times = 5  # num of train_steps for each update
         self.is_adjust_lr = True  # whether dynamic changing lr
+        self.adjust_lr_freq = 5 # the frenquency of lr adjustment
         self.kl_targ = 0.02  # KL，used for lr adjustment, the smaller kl_targ, the smaller lr tends to be
         self.check_freq = 30  # frequency of checking the performance of current model and saving model
         self.start_game_num = 0  # the starting num of training

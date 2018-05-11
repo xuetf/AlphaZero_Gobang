@@ -49,18 +49,18 @@ class TrainPipeline():
             self.augmented_len += len(play_data)
             self.config.data_buffer.extend(play_data)
 
-    def optimize(self, iteration=0):
+    def optimize(self, iteration):
         """update the policy-value net"""
         mini_batch = random.sample(self.config.data_buffer, self.config.batch_size)
         state_batch, mcts_probs_batch, winner_batch = list(zip(*mini_batch))
 
-        if self.config.is_adjust_lr:
+        if self.config.is_adjust_lr and iteration % self.config.adjust_lr_freq == 0:
             old_probs, old_v = self.policy_value_net.predict_many(state_batch) # used for adjusting lr
 
         for i in range(self.config.per_game_opt_times): # number of opt times
             loss_info = self.policy_value_net.fit(state_batch, mcts_probs_batch, winner_batch,
                                                       self.config.learn_rate * self.config.lr_multiplier)
-        if self.config.is_adjust_lr:
+        if self.config.is_adjust_lr and iteration % self.config.adjust_lr_freq == 0:
             # adaptively adjust the learning rate
             self.adjust_learning_rate(old_probs, old_v, state_batch, winner_batch)
             #self.adjust_learning_rate_2(iteration)
@@ -237,7 +237,7 @@ class TrainPipeline():
                                                             self.episode_len, self.augmented_len, len(self.config.data_buffer)))
 
                 if len(self.config.data_buffer) > self.config.batch_size:
-                    loss_info = self.optimize(iteration=i) # big step 2
+                    loss_info = self.optimize(iteration=i+1) # big step 2
                     self.config.loss_records.append(loss_info)
 
                 self.config.start_game_num = i + 1  # update for restart
