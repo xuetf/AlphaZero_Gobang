@@ -219,7 +219,8 @@ class TrainPipeline():
             self.config.increase_mean_loss_times += 1
 
         if self.config.increase_mean_loss_times >= self.config.adjust_lr_increase_loss_times:
-            self.config.learn_rate /= 2 # decrease lr by half
+            self.config.learn_rate /= 2 # decrease init lr by half
+            self.config.kl_targ /= 1.5 # decrease kl_targ, so that the lr tends to be smaller
             self.config.increase_mean_loss_times = 0 # reset again
             print('decrease lr by half, now init lr is {0:.5f}'.format(self.config.learn_rate))
 
@@ -245,8 +246,8 @@ class TrainPipeline():
                 if (i + 1) % self.config.check_freq == 0:
                     print("current iteration: {}".format(i + 1))
                     win_ratio = self.evaluate() #big step 3
-                    self.save_model(win_ratio, i+1)
                     self.check_loss_change() # check loss, and adjust init lr if necessary
+                    self.save_model(win_ratio, i + 1)
 
 
 
