@@ -32,7 +32,7 @@ def run(config=None):
         # human player, input your move in the format: 2,3
         human = HumanPlayer()
 
-        # set start_player=0 for human first
+        # set who_first=0 for human first
         game.start_game(human, mcts_player, who_first=1, is_shown=1)
 
     except KeyboardInterrupt:
