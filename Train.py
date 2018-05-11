@@ -77,10 +77,10 @@ class TrainPipeline():
         adjust learning rate based on KL
         '''
         new_probs, new_v = self.policy_value_net.predict_many(state_batch)
-        kl = np.mean(np.sum(old_probs * (np.log(old_probs + 1e-10) - np.log(new_probs + 1e-10)), axis=1))  # KL散度，相对熵
-        if kl > self.config.kl_targ * 2 and self.config.lr_multiplier > 0.1:  # kl增大，收敛不好，减小学习率
+        kl = np.mean(np.sum(old_probs * (np.log(old_probs + 1e-10) - np.log(new_probs + 1e-10)), axis=1))  # KL
+        if kl > self.config.kl_targ * 2 and self.config.lr_multiplier > 0.1:  # kl increase, denote that the new move prob distribution deviate a lot from original distribution, that's what we don't expect. maybe dute to too large lr
             self.config.lr_multiplier /= 1.5
-        elif kl < self.config.kl_targ / 2 and self.config.lr_multiplier < 10:  # kl很小，说明收敛不错；提高学习率
+        elif kl < self.config.kl_targ / 2 and self.config.lr_multiplier < 10:  # kl decrease, denote that learning procedure is vary stable and slow
             self.config.lr_multiplier *= 1.5
 
         explained_var_old = 1 - np.var(np.array(winner_batch) - old_v.flatten()) / np.var(np.array(winner_batch))
@@ -178,7 +178,7 @@ class TrainPipeline():
 
         #---------------Adjust Opponent---------------------#
         # Firstly, Make Rollout stronger(increase pure_mcts_playout_num)
-        # Secondly, when RolloutPlayer is the strongest version(mcts_num=5000) but still loss self.config change_opponent_continuous_times Times,
+        # Secondly, when RolloutPlayer is the strongest version(mcts_num=5000) but still lose self.config change_opponent_continuous_times Times,
         # Then Change the opponent to AlphaZero Player
 
         # if opponent is RolloutPlayer, Then make it Stronger!!
