@@ -219,7 +219,7 @@ class TrainPipeline():
             self.config.increase_mean_loss_times += 1
 
         if self.config.increase_mean_loss_times >= self.config.adjust_lr_increase_loss_times:
-            self.config.learn_rate /= 5 # decrease init lr by half
+            self.config.learn_rate /= 10 # decrease init lr by half
             self.config.kl_targ /= 10 # decrease kl_targ, so that the lr tends to be smaller
             #self.config.increase_mean_loss_times = 0 # reset again
             print('decrease lr by half, now init lr is {0:.5f}'.format(self.config.learn_rate))
