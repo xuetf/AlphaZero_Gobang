@@ -211,7 +211,8 @@ class TrainPipeline():
         last_check_freq_mean_loss = np.mean(combined_loss_list[-self.config.check_freq:])
         if self.config.min_mean_loss_every_check_freq is None or \
                 last_check_freq_mean_loss < self.config.min_mean_loss_every_check_freq:
-            print('decrease loss by {0:.4f}'.format(self.config.min_mean_loss_every_check_freq-last_check_freq_mean_loss))
+            if self.config.min_mean_loss_every_check_freq is not None:
+                print('decrease loss by {0:.4f}'.format(self.config.min_mean_loss_every_check_freq-last_check_freq_mean_loss))
             self.config.min_mean_loss_every_check_freq = last_check_freq_mean_loss # update
             self.config.increase_mean_loss_times = 0 # reset to zero
         else:
