@@ -49,22 +49,3 @@ class Config:
         self.min_mean_loss_every_check_freq = None # current minimum mean loss of every check_freq steps
         self.increase_mean_loss_times = 0 # the time of increasing loss, used to adjust lr
         self.adjust_lr_increase_loss_times = 3 # when the mean loss increase such times, then decrease lr by half
-
-
-config = pickle.load(open("tmp/epochs-{0}-opponent-{1}-win-{2:.2f}.pkl".format(810, 'AlphaZero', 0.80), 'rb'))
-new_config = Config()
-new_config.board = config.board
-new_config.game = config.game
-new_config.learn_rate = config.learn_rate
-new_config.lr_multiplier = config.lr_multiplier
-new_config.data_buffer = config.data_buffer
-new_config.start_game_num = config.start_game_num
-new_config.policy_param = config.policy_param
-new_config.loss_records = config.loss_records
-new_config.best_win_pure_so_far = config.best_win_pure_so_far
-new_config.continuous_win_pure_times = config.continuous_win_pure_times
-new_config.change_opponent_continuous_times = config.change_opponent_continuous_times
-new_config.cur_best_alphazero_store_filename = config.cur_best_alphazero_store_filename
-new_config.evaluate_opponent=config.evaluate_opponent
-new_config.min_mean_loss_every_check_freq = 1.9237356002514179
-pickle.dump(new_config, open("tmp/epochs-{0}-opponent-{1}-win-{2:.2f}_new.pkl".format(810, 'AlphaZero', 0.80), 'wb'))
