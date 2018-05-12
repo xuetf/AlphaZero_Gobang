@@ -236,6 +236,9 @@ class TrainPipeline():
                 self.self_play(self.config.play_batch_size) # big step 1
                 print("iteration i:{}, episode_len:{}, augmented_len:{}, current_buffer_len:{}".format(i + 1,
                                                             self.episode_len, self.augmented_len, len(self.config.data_buffer)))
+                # new Added parameters,So check for old config file
+                if not hasattr(self.config, "episode_records"): setattr(config, "episode_records", [])
+                self.config.episode_records.append(self.episode_len)
 
                 if len(self.config.data_buffer) > self.config.batch_size:
                     loss_info = self.optimize(iteration=i+1) # big step 2
