@@ -10,9 +10,9 @@ tmp_data_file = "tmp/"
 
 class Config:
     def __init__(self):
-        self.board_width = 6
-        self.board_height = 6
-        self.n_in_row = 4
+        self.board_width = 8
+        self.board_height = 8
+        self.n_in_row = 5
         self.board = Board(width=self.board_width, height=self.board_height, n_in_row=self.n_in_row)
         self.game = Game(self.board)
         # training params
@@ -31,7 +31,7 @@ class Config:
         self.is_adjust_lr = True  # whether dynamic changing lr
         self.adjust_lr_freq = 5 # the frenquency of lr adjustment
         self.kl_targ = 0.02  # KL，used for lr adjustment, the smaller kl_targ, the smaller lr tends to be
-        self.check_freq = 30  # frequency of checking the performance of current model and saving model
+        self.check_freq = 50  # frequency of checking the performance of current model and saving model
         self.start_game_num = 0  # the starting num of training
         self.game_batch_num = 1500
         # num of simulations used for the pure mcts, which is used as the opponent to evaluate the trained policy
