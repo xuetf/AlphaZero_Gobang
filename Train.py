@@ -112,7 +112,7 @@ class TrainPipeline():
         else:
             # oppenent is AlphaZeroPlayer
             print("Begin evaluation, Opponent is AlphaZeroMCTSPlayer")
-            opponent_mcts_player = load_current_best_player(self.config.cur_best_alphazero_store_filename)
+            opponent_mcts_player = load_player_from_file(self.config.cur_best_alphazero_store_filename)
 
         win_cnt = defaultdict(int)
         for i in range(n_games):
