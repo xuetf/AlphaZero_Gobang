@@ -42,8 +42,7 @@ def run(config=None):
 
 if __name__ == '__main__':
     config = load_config(file_name=tmp_data_file + 'epochs-1080-6_6_4_best_resnet.pkl', only_load_param=False)
-    #run(config)
-    setattr(config,"episode_records", [])
-    print (config.episode_records)
+    run(config)
+
 
 
