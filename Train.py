@@ -23,11 +23,11 @@ class TrainPipeline():
     def __init__(self, config=None):
         # params of the board and the game
         self.config = config if config else Config()
-
+        if not hasattr(self.config, "use_gpu"): setattr(config, "use_gpu", False) # compatible with old version config
         # Network wrapper
         self.policy_value_net = PolicyValueNet(self.config.board_width, self.config.board_height,
                                                net_params=self.config.policy_param,
-                                               Network=self.config.network)
+                                               Network=self.config.network, use_gpu=self.config.use_gpu)
 
         # 传入policy_value_net的predict方法，神经网络辅助MCTS搜索过程
         self.mcts_player = AlphaZeroPlayer(self.policy_value_net.predict, c_puct=self.config.c_puct,

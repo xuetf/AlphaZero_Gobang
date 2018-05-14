@@ -31,7 +31,7 @@ class Config:
         self.is_adjust_lr = True  # whether dynamic changing lr
         self.adjust_lr_freq = 5 # the frenquency of lr adjustment
         self.kl_targ = 0.02  # KL，used for lr adjustment, the smaller kl_targ, the smaller lr tends to be
-        self.check_freq = 30  # frequency of checking the performance of current model and saving model
+        self.check_freq = 50  # frequency of checking the performance of current model and saving model
         self.start_game_num = 0  # the starting num of training
         self.game_batch_num = 1500
         # num of simulations used for the pure mcts, which is used as the opponent to evaluate the trained policy
@@ -51,3 +51,4 @@ class Config:
         self.increase_mean_loss_times = 0 # the time of increasing loss, used to adjust lr
         self.adjust_lr_increase_loss_times = 3 # when the mean loss increase such times, then decrease lr by half
         self.episode_records = [] # save episode length for every game
+        self.use_gpu = True
