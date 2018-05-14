@@ -231,7 +231,7 @@ class ResNet2(nn.Module):
 
         # value head: state value layers
         self.val_filters = 2
-        self.val_hidden_num = 128
+        self.val_hidden_num = 256
         self.val_conv1 = nn.Conv2d(out_channels, self.val_filters , kernel_size=1)
         self.val_bn1 = nn.BatchNorm2d(self.val_filters)
         self.val_relu1 = nn.ReLU()
