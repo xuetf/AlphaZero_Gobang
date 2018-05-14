@@ -10,9 +10,9 @@ tmp_data_file = "tmp/"
 
 class Config:
     def __init__(self):
-        self.board_width = 6
-        self.board_height = 6
-        self.n_in_row = 4
+        self.board_width = 8
+        self.board_height = 8
+        self.n_in_row = 5
         self.board = Board(width=self.board_width, height=self.board_height, n_in_row=self.n_in_row)
         self.game = Game(self.board)
         # training params
@@ -38,7 +38,7 @@ class Config:
         self.pure_mcts_playout_num = 1000
 
         # New Added Parameters
-        self.network = ResNet  # the type of network
+        self.network = ResNet2  # the type of network
         self.policy_param = None  # Network parameters
         self.loss_records = [] # loss records
         self.best_win_pure_so_far = 0.0 # win ratio against rollout mcts player

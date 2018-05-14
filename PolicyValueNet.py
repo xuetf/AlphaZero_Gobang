@@ -211,6 +211,70 @@ class SimpleResNet(nn.Module):
         return "simple_resnet"
 
 
+class ResNet2(nn.Module):
+    '''Full ResNet According to the paper'''
+    def __init__(self, board_width, board_height, in_channels=4, out_channels=128):
+        super(ResNet2, self).__init__()
+        self.board_width = board_width
+        self.board_height = board_height
+        # common layers
+        self.conv_layer = ConvBlock(in_channels, out_channels)
+        self.res_layer = self.make_residual_layers(2, out_channels) # 论文里blocks=19 or 39
+
+        # policy head: action policy layers
+        self.act_filters = 2
+        self.act_conv1 = nn.Conv2d(out_channels, self.act_filters, kernel_size=1, stride=1) #2 filters
+        self.act_bn1 = nn.BatchNorm2d(self.act_filters)
+        self.act_relu1 = nn.ReLU()
+        self.act_fc1 = nn.Linear(self.act_filters * board_width * board_height, board_width * board_height)
+        self.act_softmax = nn.Softmax(dim=1)
+
+        # value head: state value layers
+        self.val_filters = 2
+        self.val_hidden_num = 128
+        self.val_conv1 = nn.Conv2d(out_channels, self.val_filters , kernel_size=1)
+        self.val_bn1 = nn.BatchNorm2d(self.val_filters)
+        self.val_relu1 = nn.ReLU()
+        self.val_fc1 = nn.Linear(self.val_filters * board_width * board_height, self.val_hidden_num)
+        self.val_relu2 = nn.ReLU()
+        self.val_fc2 = nn.Linear(self.val_hidden_num, 1)
+        self.val_tanh = nn.Tanh()
+
+
+    def make_residual_layers(self, blocks=2, out_channels=256):
+        layers = []
+        for i in range(blocks):
+            layers.append(ResidualBlock(out_channels))
+        return nn.Sequential(*layers)
+
+
+    def forward(self, state):
+        # common layer
+        x = self.conv_layer(state)
+        x = self.res_layer(x)
+        # policy head
+        x_act = self.act_conv1(x)
+        x_act = self.act_bn1(x_act)
+        x_act = self.act_relu1(x_act)
+        x_act = x_act.view(-1, self.act_filters * self.board_width * self.board_height)#flatten
+        policy_logits = self.act_fc1(x_act)
+        policy_output = self.act_softmax(policy_logits)
+
+        # value head
+        x_val = self.val_conv1(x)
+        x_val = self.val_bn1(x_val)
+        x_val = self.val_relu1(x_val)
+        x_val = x_val.view(-1, self.val_filters * self.board_width * self.board_height)
+        x_val = self.val_fc1(x_val)
+        x_val = self.val_relu2(x_val)
+        x_val = self.val_fc2(x_val)
+        value_output = self.val_tanh(x_val)
+        return policy_logits, policy_output, value_output
+
+
+    def __str__(self):
+        return "resnet"
+
 
 """policy-value network wrapper """
 class PolicyValueNet():
