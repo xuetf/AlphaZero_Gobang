@@ -21,7 +21,7 @@ class Config:
         self.lr_decay_per_iterations = 100  # learning rate decay after how many iterations
         self.lr_decay_speed = 5  # learning rate decay speed
         self.temp = 1.0  # the temperature param
-        self.n_playout = 400  # num of simulations for each move
+        self.n_playout = 10  # num of simulations for each move
         self.c_puct = 5
         self.buffer_size = 10000
         self.batch_size = 512  # mini-batch size for training
@@ -38,7 +38,7 @@ class Config:
         self.pure_mcts_playout_num = 1000
 
         # New Added Parameters
-        self.network = ResNet2  # the type of network
+        self.network = ResNet  # the type of network
         self.policy_param = None  # Network parameters
         self.loss_records = [] # loss records
         self.best_win_pure_so_far = 0.0 # win ratio against rollout mcts player
