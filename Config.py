@@ -21,7 +21,7 @@ class Config:
         self.lr_decay_per_iterations = 100  # learning rate decay after how many iterations
         self.lr_decay_speed = 5  # learning rate decay speed
         self.temp = 1.0  # the temperature param
-        self.n_playout = 10  # num of simulations for each move
+        self.n_playout = 400  # num of simulations for each move
         self.c_puct = 5
         self.buffer_size = 10000
         self.batch_size = 512  # mini-batch size for training
