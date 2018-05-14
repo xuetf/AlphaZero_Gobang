@@ -21,14 +21,14 @@ class Config:
         self.lr_decay_per_iterations = 100  # learning rate decay after how many iterations
         self.lr_decay_speed = 5  # learning rate decay speed
         self.temp = 1.0  # the temperature param
-        self.n_playout = 400  # num of simulations for each move
+        self.n_playout = 100  # num of simulations for each move
         self.c_puct = 5
         self.buffer_size = 10000
         self.batch_size = 512  # mini-batch size for training
         self.data_buffer = deque(maxlen=self.buffer_size)
         self.play_batch_size = 1  # how many games of each self-play epoch
         self.per_game_opt_times = 5  # num of train_steps for each update
-        self.is_adjust_lr = True  # whether dynamic changing lr
+        self.is_adjust_lr = False  # whether dynamic changing lr
         self.adjust_lr_freq = 5 # the frenquency of lr adjustment
         self.kl_targ = 0.02  # KL，used for lr adjustment, the smaller kl_targ, the smaller lr tends to be
         self.check_freq = 30  # frequency of checking the performance of current model and saving model
