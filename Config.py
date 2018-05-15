@@ -43,7 +43,7 @@ class Config:
         self.loss_records = [] # loss records
         self.best_win_pure_so_far = 0.0 # win ratio against rollout mcts player
         self.continuous_win_pure_times = 0 # the time of continuous winning against rollout mcts player
-        self.change_opponent_continuous_times = 3 # time when change evaluate opponent from Pure to AlphaZero
+        self.change_opponent_continuous_times = 100 # time when change evaluate opponent from Pure to AlphaZero
         self.win_ratio_alphazero = 0.55 # if win ratio against previous best alphazero is larger than 0.55 then it is ok to save
         self.cur_best_alphazero_store_filename = None # the current best AlphaZero Player
         self.evaluate_opponent = 'Pure' # The opponent to evaluate. Pure Opponent at the beginning of training, when beat pure opponent many times, then change to Previous Best AlphaZero Player
