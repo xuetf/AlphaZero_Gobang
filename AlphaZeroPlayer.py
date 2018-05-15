@@ -21,7 +21,7 @@ class AlphaZeroPlayer(Player):
         '''reset, reconstructing the MCTS Tree for next simulation'''
         self.mcts.reuse(-1)
 
-    def play(self, board, temp=1e-3, explore_step=30, epsilon=0.2, alpha=0.3, return_prob=False):
+    def play(self, board, temp=1e-3, explore_step=30, epsilon=0, alpha=0.3, return_prob=False):
         sensible_moves = board.availables
         move_probs = np.zeros(board.width * board.height)  # the pi vector returned by MCTS as in the alphaGo Zero paper
         if len(sensible_moves) > 0:
