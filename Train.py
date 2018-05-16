@@ -170,7 +170,7 @@ class TrainPipeline():
             # load network parameters
             self.config.policy_param = self.policy_value_net.get_policy_param()  # get model params
 
-            self.config.cur_best_alphazero_store_filename = "../drive/workspace/work_deep_learning/cpuct_20/epochs-{0}-opponent-{1}-win-{2:.2f}.pkl".format(epochs,
+            self.config.cur_best_alphazero_store_filename = "../drive/workspace/work_deep_learning/tmp_5_in_rows_resnet2/epochs-{0}-opponent-{1}-win-{2:.2f}.pkl".format(epochs,
                                                                                                                  self.config.evaluate_opponent,
                                                                                                                  win_ratio)
             pickle.dump(self.config, open(self.config.cur_best_alphazero_store_filename, 'wb'))
