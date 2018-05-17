@@ -33,12 +33,12 @@ def load_config(file_name, only_load_param=True):
     return config
 
 
-def load_player_from_file(file_name, add_noise=True):
+def load_player_from_file(file_name, add_noise=True, nplays=1200):
     config = load_config(file_name, only_load_param=False)
     best_policy = PolicyValueNet(config.board_width, config.board_height,
                                  Network=config.network,
                                  net_params=config.policy_param)  # setup which Network to use based on the net_params
 
     best_player = AlphaZeroPlayer(best_policy.predict, c_puct=config.c_puct,
-                                  nplays=1200, add_noise=add_noise)  #increase nplays=1200, add_noise=True, add_noise_to_best_player, avoid the same play every game
+                                  nplays=nplays, add_noise=add_noise)  #increase nplays=1200, add_noise=True, add_noise_to_best_player, avoid the same play every game
     return best_player
