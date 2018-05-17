@@ -73,7 +73,7 @@ def tour_1100_vs_1500(n_games=100):
         win_cnt[winner] += 1
         print('Game {}, Winner No is {}'.format(num + 1, winner))
     print("win: {}, lose: {}, tie:{}".format(win_cnt[1], win_cnt[2], win_cnt[-1]))
-
+    pickle.dump(dict(win_cnt), open('../drive/workspace/work_deep_learning/tmp_5_in_rows_resnet2/win_ratio.pkl', 'wb'))
 
 
 
