@@ -58,8 +58,9 @@ def tour(n_games=10):
     return win_ratio
 
 if __name__ == '__main__':
-    config = load_config(file_name=tmp_data_file + 'epochs-1450-resnet2.pkl', only_load_param=False)
-    run(config)
+    #config = load_config(file_name=tmp_data_file + 'epochs-1450-resnet2.pkl', only_load_param=False)
+    #run(config)
+    tour()
 
 
 
