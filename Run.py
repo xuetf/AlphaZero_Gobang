@@ -24,7 +24,7 @@ def run(config=None):
                                      Network=config.network, net_params=config.policy_param) # setup which Network to use based on the net_params
 
         mcts_player = AlphaZeroPlayer(best_policy.predict, c_puct=config.c_puct,
-                                 nplays=100)  #set larger nplays for better performance
+                                 nplays=1000)  #set larger nplays for better performance
 
         # uncomment the following line to play with pure MCTS
         # mcts_player2 = RolloutPlayer(nplays=1000, c_puct=config.c_puct)
@@ -61,10 +61,27 @@ def tour(n_games=20):
     pickle.dump(dict(win_ratio), open('win_ratio.pkl','wb'))
     return win_ratio
 
+def tour_1100_vs_1500(n_games=100):
+    name = '../drive/workspace/work_deep_learning/tmp_5_in_rows_resnet2/epochs-{}-opponent-Pure-win-1.00.pkl'
+    player1 = load_player_from_file(name.format(1100), add_noise=True, nplays=500)  # 最终模型
+    player2 = load_player_from_file(name.format(1500), add_noise=True, nplays=500)  # 最终模型
+    win_cnt = collections.defaultdict(int)
+    for num in range(n_games):
+        board = Board(width=8, height=8, n_in_row=5)
+        game = Game(board)
+        winner = game.start_game(player1, player2, who_first=num % 2, is_shown= (1 if num<5 else 0))
+        win_cnt[winner] += 1
+        print('Game {}, Winner No is {}'.format(num + 1, winner))
+    print("win: {}, lose: {}, tie:{}".format(win_cnt[1], win_cnt[2], win_cnt[-1]))
+
+
+
+
 if __name__ == '__main__':
-    #config = load_config(file_name=tmp_data_file + 'epochs-1450-resnet2.pkl', only_load_param=False)
+    #config = load_config(file_name=tmp_data_file + 'epochs-1100-resnet2.pkl', only_load_param=False)
     #run(config)
-    tour()
+    tour_1100_vs_1500()
+
 
 
 
