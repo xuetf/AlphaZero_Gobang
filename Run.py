@@ -43,6 +43,7 @@ def tour(n_games=10):
     win_ratio = collections.defaultdict(float)
     for i in range(50, 1501, 50):
         win_cnt = collections.defaultdict(int)
+        print ('AlphaGoZero'.format(i) + 'VS' 'AlphaGoZero1500')
         for num in range(n_games):
             board = Board(width=8, height=8, n_in_row=5)
             game = Game(board)
