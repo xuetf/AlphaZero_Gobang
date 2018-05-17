@@ -38,7 +38,7 @@ def run(config=None):
     except KeyboardInterrupt:
         print('\n\rquit')
 
-def tour(n_games=10):
+def tour(n_games=20):
     name = '../drive/workspace/work_deep_learning/tmp_5_in_rows_resnet2/epochs-{}-opponent-Pure-win-1.00.pkl'
     win_ratio = collections.defaultdict(float)
     player2 = load_player_from_file(name.format(1500), add_noise=True, nplays=100)  # 最终模型
