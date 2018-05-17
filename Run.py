@@ -49,7 +49,7 @@ def tour(n_games=10):
             game = Game(board)
             player1 = load_player_from_file(name.format(i), add_noise=True, nplays=500)
             player2 = load_player_from_file(name.format(1500), add_noise=True, nplays=500) # 最终模型
-            winner = game.start_game(player1, player2, who_first=1, is_shown=1)
+            winner = game.start_game(player1, player2, who_first=num % 2, is_shown=1)
             win_cnt[winner] += 1
         print("win: {}, lose: {}, tie:{}".format(win_cnt[1], win_cnt[2], win_cnt[-1]))
         win_ratio[i] = 1.0*win_cnt[1] / n_games
