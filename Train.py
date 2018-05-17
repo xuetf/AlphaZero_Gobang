@@ -250,7 +250,7 @@ class TrainPipeline():
                 if (i + 1) % self.config.check_freq == 0:
                     print("current iteration: {}".format(i + 1))
                     win_ratio = self.evaluate() #big step 3
-                    self.check_loss_change() # check loss, and adjust init lr if necessary
+                    #self.check_loss_change() # check loss, and adjust init lr if necessary
                     self.save_model(win_ratio, i + 1)
 
 
