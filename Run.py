@@ -39,7 +39,7 @@ def run(config=None):
         print('\n\rquit')
 
 def tour(n_games=10):
-    name = '../drive/workspace/work_deep_learning/epochs-{}-opponent-Pure-win-1.00.pkl'
+    name = '../drive/workspace/work_deep_learning/tmp_5_in_rows_resnet2/epochs-{}-opponent-Pure-win-1.00.pkl'
     win_ratio = collections.defaultdict(float)
     for i in range(50, 1501, 50):
         win_cnt = collections.defaultdict(int)
