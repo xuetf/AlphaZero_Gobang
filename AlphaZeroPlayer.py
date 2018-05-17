@@ -21,7 +21,7 @@ class AlphaZeroPlayer(Player):
         '''reset, reconstructing the MCTS Tree for next simulation'''
         self.mcts.reuse(-1)
 
-    def play(self, board, temp=1e-3, explore_step=30, epsilon=0.2, alpha=0.3, return_prob=False):
+    def play(self, board, temp=1e-3, explore_step=30, epsilon=0.2, alpha=0.3, after_step_no_noise=6, return_prob=False):
         sensible_moves = board.availables
         move_probs = np.zeros(board.width * board.height)  # the pi vector returned by MCTS as in the alphaGo Zero paper
         if len(sensible_moves) > 0:
@@ -31,6 +31,9 @@ class AlphaZeroPlayer(Player):
             move_probs[list(acts)] = probs
 
             if self._add_noise:
+                # not self-play and if steps is larger than after_step_no_noise, then don't add noise
+                if not self._is_selfplay and len(board.states) > after_step_no_noise:
+                    epsilon = 0
                 # different from paper, in the paper, noise is added to the root of MCTS Tree
                 # Here, noise is just added to the result
                 move = np.random.choice(acts,
