@@ -41,11 +41,11 @@ def run(config=None):
 def tour(n_games=10):
     name = '../drive/workspace/work_deep_learning/tmp_5_in_rows_resnet2/epochs-{}-opponent-Pure-win-1.00.pkl'
     win_ratio = collections.defaultdict(float)
+    player2 = load_player_from_file(name.format(1500), add_noise=True, nplays=500)  # 最终模型
     for i in range(50, 1501, 50):
         win_cnt = collections.defaultdict(int)
         print ('AlphaGoZero{}'.format(i) + ' VS ' 'AlphaGoZero1500')
         player1 = load_player_from_file(name.format(i), add_noise=True, nplays=500)
-        player2 = load_player_from_file(name.format(1500), add_noise=True, nplays=500)  # 最终模型
         for num in range(n_games):
             board = Board(width=8, height=8, n_in_row=5)
             game = Game(board)
