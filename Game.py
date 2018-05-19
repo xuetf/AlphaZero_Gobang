@@ -1,16 +1,28 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import numpy as np
+from VisualTool import *
 
 class Game(object):
-    def __init__(self, board, **kwargs):
+    def __init__(self, board,  **kwargs):
         self.board = board
+        if 'tool' in kwargs.keys():
+            self.visualTool = kwargs['tool']
+
+    def show(self):
+        self.visualTool.draw()
 
 
     def graphic(self, board, player1, player2):
         """
         Draw the board and show game info
         """
+        loc = self.board.move2loc(self.board.last_move)
+        self.visualTool.graphic(loc[0], loc[1])
+
+
+    def graphic_command(self, board, player1, player2):
+        '''graphic in the command line for self-play'''
         width = board.width
         height = board.height
         player1_no = player1 if isinstance(player1, int) else player1.get_player_no()
@@ -41,6 +53,7 @@ class Game(object):
                     print('_'.center(8), end='')
             print('\r\n\r\n')
 
+
     def set_player_symbol(self, who_first):
         '''show board, set player symbol X OR O'''
         p1, p2 = self.board.players
@@ -63,12 +76,12 @@ class Game(object):
         self.set_player_symbol(who_first)
 
         players = {p1: player1, p2: player2}
-        if is_shown:
-            self.graphic(self.board, player1, player2)
+        # if is_shown:
+        #     self.graphic(self.board, player1, player2)
         while (True):
             current_player = self.board.get_current_player()
             player_in_turn = players[current_player]
-            move = player_in_turn.play(self.board)
+            move = player_in_turn.play(self.board, tool=self.visualTool)
             self.board.do_move(move)
             if is_shown:
                 self.graphic(self.board, player1, player2)
@@ -77,8 +90,10 @@ class Game(object):
                 if is_shown:
                     if winner != -1:
                         print("Game end. Winner is", players[winner])
+                        self.visualTool.wininfo("Game end. Winner is {}".format(players[winner]))
                     else:
                         print("Game end. Tie")
+                        self.visualTool.wininfo("Game end. Tie")
                 return winner
 
     def start_self_play_game(self, player, is_shown=0, temp=1e-3):
@@ -99,7 +114,7 @@ class Game(object):
             # perform a move
             self.board.do_move(move)
             if is_shown:
-                self.graphic(self.board, p1, p2)
+                self.graphic_command(self.board, p1, p2)
             end, winner = self.board.game_end()
             if end:
                 # winner from the perspective of the current player of each state

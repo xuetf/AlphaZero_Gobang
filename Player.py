@@ -8,6 +8,7 @@ class Player(object):
     def __init__(self, player_no=0, player_name=""):
         self.player_no = player_no
         self.player_name = player_name
+        self.can_click = False
 
     def set_player_no(self, player_no):
         self.player_no = player_no
@@ -19,7 +20,7 @@ class Player(object):
         return self.player_name
 
     # abstract
-    def play(self, board):
+    def play(self, board, **kwargs):
         raise NotImplementedError
 
 

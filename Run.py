@@ -17,23 +17,30 @@ def run(config=None):
     if config == None:  config = load_config(file_name=root_data_file+'resnet_6_6_4.model', only_load_param=True)
     try:
         board = Board(width=config.board_width, height=config.board_height, n_in_row=config.n_in_row)
-        game = Game(board)
+        tool = VisualTool(board_size=[config.board.width, config.board.height])
 
-        #--------------- human VS AI ----------------
+        #--------------------1.set player:alphazero VS human---------------------#
         best_policy = PolicyValueNet(config.board_width, config.board_height,
                                      Network=config.network, net_params=config.policy_param) # setup which Network to use based on the net_params
 
-        mcts_player = AlphaZeroPlayer(best_policy.predict, c_puct=config.c_puct,
+        player1 = AlphaZeroPlayer(best_policy.predict, c_puct=config.c_puct,
                                  nplays=1000)  #set larger nplays for better performance
 
         # uncomment the following line to play with pure MCTS
-        # mcts_player2 = RolloutPlayer(nplays=1000, c_puct=config.c_puct)
+        # player2 = RolloutPlayer(nplays=1000, c_puct=config.c_puct)
+        player2 = HumanPlayer()
 
-        # human player, input your move in the format: 2,3
-        human = HumanPlayer()
+        # --------------------2.set order---------------------#
+        who_first = 1 # 0 means player1 first, otherwise player2 first
+        tool.set_player(player1, player2) if who_first == 0 else tool.set_player(player2, player1)
 
-        # set who_first=0 for human first
-        game.start_game(human, mcts_player, who_first=1, is_shown=1)
+
+        # --------------------3.start game--------------------#
+        game = Game(board, tool=tool)
+        t = threading.Thread(target=game.start_game, args=(player1, player2, who_first))
+        t.start()
+        game.show()
+
 
     except KeyboardInterrupt:
         print('\n\rquit')
@@ -78,9 +85,9 @@ def tour_1100_vs_1500(n_games=100):
 
 
 if __name__ == '__main__':
-    #config = load_config(file_name=tmp_data_file + 'epochs-1100-resnet2.pkl', only_load_param=False)
-    #run(config)
-    tour_1100_vs_1500()
+    config = load_config(file_name=tmp_data_file + 'epochs-1500_resnet2.pkl', only_load_param=False)
+    run(config)
+    #tour_1100_vs_1500()
 
 
 

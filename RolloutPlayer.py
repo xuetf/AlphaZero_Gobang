@@ -13,7 +13,7 @@ class RolloutPlayer(Player):
     def reset_player(self):
         self.mcts.reuse(-1)
 
-    def play(self, board):
+    def play(self, board, **kwargs):
         sensible_moves = board.availables
         if len(sensible_moves) > 0:
             move = self.mcts.simulate(board)
@@ -23,4 +23,4 @@ class RolloutPlayer(Player):
             print("WARNING: the board is full")
 
     def __str__(self):
-        return "RolloutPlayer {} {}".format(self.get_player_no(), self.get_player_name())
+        return "RolloutPlayer {}".format(self.get_player_name())

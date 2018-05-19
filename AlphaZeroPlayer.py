@@ -21,7 +21,7 @@ class AlphaZeroPlayer(Player):
         '''reset, reconstructing the MCTS Tree for next simulation'''
         self.mcts.reuse(-1)
 
-    def play(self, board, temp=1e-3, explore_step=30, epsilon=0.2, alpha=0.3, after_step_no_noise=6, return_prob=False):
+    def play(self, board, temp=1e-3, explore_step=30, epsilon=0.2, alpha=0.3, after_step_no_noise=6, return_prob=False,**kwargs):
         sensible_moves = board.availables
         move_probs = np.zeros(board.width * board.height)  # the pi vector returned by MCTS as in the alphaGo Zero paper
         if len(sensible_moves) > 0:
@@ -56,4 +56,4 @@ class AlphaZeroPlayer(Player):
             print("WARNING: the board is full")
 
     def __str__(self):
-        return "AlphaZeroPlayer{} {}".format(self.get_player_no(), self.get_player_name())
+        return "AlphaZeroPlayer{}".format(self.get_player_name())
