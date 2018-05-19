@@ -1,6 +1,10 @@
 ## Overview
 This is a AlphaZero Implementation of Gobang based on Pytorch.
 
+## Pytorch 0.3.1 Install
+https://ptorch.com/news/145.html
+
+
 ## Code
 - Train.py : Run the train process
 - Run.py : Play with Human using the trained model
@@ -17,13 +21,30 @@ This is a AlphaZero Implementation of Gobang based on Pytorch.
 - Game.py: Game for Gobang
 - VisualTool.py: Tk Tool for visualizing Chess Board
 
-## Running Script
-### Run on Linux Server, background job
-nohup python -u Train.py > simpleres_train.log 2>&1 &
+## Running Code
+### Training
+-  Train from scratch: 
 
-### Download the trained model
+```python3 Train.py```
+
+- Train as a background job,then:
+
+```nohup python3 -u Train.py > train.log 2>&1 &```
+
+- Train from a checkpoint:
+
+```python3 Train.py --config data/model_name.pkl ```
+
+### Play game
+
+```python3 Run.py```
+
+
+## Download or Upload
+
+### Download the trained model from remote server
 scp root@ip:/usr/local/workspace/AlphaZero_Gobang/data/current_policy_resnet_epochs_1500.model /Users/xuetf/Downloads
 
-### Upload -P 
+### Upload -P  
 scp -P 8381 local_file_path root@139.199.21.83:/root/
 
