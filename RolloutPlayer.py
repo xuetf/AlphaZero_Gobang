@@ -23,4 +23,4 @@ class RolloutPlayer(Player):
             print("WARNING: the board is full")
 
     def __str__(self):
-        return "RolloutPlayer {}".format(self.get_player_name())
+        return "RolloutPlayer {}{}".format(self.get_player_no(), self.get_player_name())

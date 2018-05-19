@@ -4,10 +4,9 @@ import numpy as np
 from VisualTool import *
 
 class Game(object):
-    def __init__(self, board,  **kwargs):
+    def __init__(self, board):
         self.board = board
-        if 'tool' in kwargs.keys():
-            self.visualTool = kwargs['tool']
+        self.visualTool = VisualTool(board_size=[self.board.width, self.board.height])
 
     def show(self):
         self.visualTool.draw()
@@ -69,10 +68,10 @@ class Game(object):
         """
         start a game between two players
         """
+        if is_shown: self.visualTool.set_player(player1, player2, who_first)
         self.board.init_board(who_first)
         p1, p2 = self.board.players
-        player1.set_player_no(p1)
-        player2.set_player_no(p2)
+
         self.set_player_symbol(who_first)
 
         players = {p1: player1, p2: player2}

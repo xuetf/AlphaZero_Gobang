@@ -37,5 +37,5 @@ class HumanPlayer(Player):
 
 
     def __str__(self):
-        return "HumanPlayer{}".format(self.get_player_name())
+        return "HumanPlayer {}{}".format(self.get_player_no(), self.get_player_name())
 

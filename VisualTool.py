@@ -41,12 +41,16 @@ class VisualTool:
 		self.canvas = Canvas(self.master, width=(self.board_size[1]+1)*self.line_distance, height=(self.board_size[0]+1)*self.line_distance+70)
 		#棋盘容器 初始化为全零 1黑 2白
 		self.chessdata = []
+		self.stone_num = 0
 		for i in range(board_size[0]):
 			self.chessdata.append([])
 			for j in range(board_size[1]):
 				self.chessdata[i].append(0)
 
-	def set_player(self, player1, player2):
+	def set_player(self, player1, player2, who_first):
+		if who_first == 1: player1, player2 = player2, player1 # change
+		player1.set_player_no(1)
+		player2.set_player_no(2)
 		can_click = [False, False]
 		can_click[0] = player1.can_click
 		can_click[1] = player2.can_click
@@ -64,13 +68,21 @@ class VisualTool:
 	# 绘制一个棋子
 	def graphic(self, x, y):
 		# 用户上步棋子位置失效
+		self.stone_num += 1
 		y_location = (self.board_size[0] - x) * self.line_distance
 		x_location = (y + 1) * self.line_distance
 		if self.isblack:
-			self.canvas.create_oval(x_location-(0.5*self.line_distance)+0.1*self.line_distance, y_location-(0.5*self.line_distance)+0.1*self.line_distance, x_location+(0.5*self.line_distance)-0.1*self.line_distance, y_location+(0.5*self.line_distance)-0.1*self.line_distance, fill="black")
+			self.canvas.create_oval(x_location-(0.5*self.line_distance)+0.1*self.line_distance,
+									y_location-(0.5*self.line_distance)+0.1*self.line_distance,
+									x_location+(0.5*self.line_distance)-0.1*self.line_distance,
+								y_location+(0.5*self.line_distance)-0.1*self.line_distance, fill="black")
 			self.chessdata[x][y] = 1
 		else:
-			self.canvas.create_oval(x_location-(0.5*self.line_distance)+0.1*self.line_distance, y_location-(0.5*self.line_distance)+0.1*self.line_distance, x_location+(0.5*self.line_distance)-0.1*self.line_distance, y_location+(0.5*self.line_distance)-0.1*self.line_distance, fill="lightgray", outline="lightgray")
+			self.canvas.create_oval(x_location-(0.5*self.line_distance)+0.1*self.line_distance,
+									y_location-(0.5*self.line_distance)+0.1*self.line_distance,
+									x_location+(0.5*self.line_distance)-0.1*self.line_distance,
+									y_location+(0.5*self.line_distance)-0.1*self.line_distance,
+									fill="lightgray", outline="lightgray")
 			self.chessdata[x][y] = 2
 		# 变换当前下棋人颜色
 		self.isblack = not self.isblack
@@ -78,25 +90,10 @@ class VisualTool:
 	# 显示胜利信息
 	def wininfo(self, winner):
 		'''直接将winner字段输出到界面即可'''
-		print (winner)
-		pass
-		# if winner == 1 or winner == 2 or winner == -1:
-		# 	# 解除绑定点击事件
-		# 	self.canvas.delete('chess_board')
-		# 	if winner == 1:
-		# 		self.canvas.create_text(0.25*(self.board_size[0]+2)*self.line_distance,(self.board_size[0]+1)*self.line_distance+40,fill="red",font="Times 20 italic bold",text="Win")
-		# 	elif winner == 2:
-		# 		self.canvas.create_text(0.65*(self.board_size[0]+2)*self.line_distance,(self.board_size[0]+1)*self.line_distance+40,fill="red",font="Times 20 italic bold",text="Win")
-		# 	else:
-		# 		self.canvas.create_text(0.25 * (self.board_size[0] + 2) * self.line_distance,
-		# 								(self.board_size[0] + 1) * self.line_distance + 40, fill="red",
-		# 								font="Times 20 italic bold", text="Win")
-        #
-		# 		self.canvas.create_text(0.65 * (self.board_size[0] + 2) * self.line_distance,
-		# 								(self.board_size[0] + 1) * self.line_distance + 40, fill="red",
-		# 								font="Times 20 italic bold", text="Win")
-		# else:
-		# 	print("传入获胜信息有误")
+		self.canvas.create_text(0.5 * (self.board_size[0] + 2) * self.line_distance,
+										30, font="Times 20 italic bold", fill="red", text=winner)
+
+		self.canvas.delete('chess_board')
 
 	# 点击事件
 	def onclick(self, event):
@@ -113,8 +110,6 @@ class VisualTool:
 					self.flag = True
 				else:
 					print("重复点击")
-		else:
-			print ("abandon")
 
 	# 绘制函数
 	def draw(self):
@@ -123,8 +118,8 @@ class VisualTool:
 		# 绘制点击读取板
 		self.canvas.create_rectangle(0, 0, (self.board_size[1]+1)*self.line_distance, (self.board_size[0]+1)*self.line_distance, fill='white', outline='white', tags=('chess_board'))
 		# 绘制玩家信息
-		self.canvas.create_text(0.25*(self.board_size[0]+2)*self.line_distance,(self.board_size[0]+1)*self.line_distance+20,fill="darkblue",font="Times 20 italic bold",text="黑方: "+self.player_name[0])
-		self.canvas.create_text(0.65*(self.board_size[0]+2)*self.line_distance,(self.board_size[0]+1)*self.line_distance+20,fill="darkblue",font="Times 20 italic bold",text="白方: "+self.player_name[1])
+		self.canvas.create_text(0.25*(self.board_size[0]+2)*self.line_distance,(self.board_size[0]+1)*self.line_distance+20,fill="darkblue",font="Times 20 italic bold",text="Black: "+self.player_name[0])
+		self.canvas.create_text(0.65*(self.board_size[0]+2)*self.line_distance,(self.board_size[0]+1)*self.line_distance+20,fill="darkblue",font="Times 20 italic bold",text="White: "+self.player_name[1])
 		# 绘制棋盘
 		for x in range(0, (self.board_size[1]+1)*self.line_distance, self.line_distance):
 			self.canvas.create_line(x,self.line_distance,x,self.board_size[0]*self.line_distance,fill="#476042")
@@ -134,5 +129,6 @@ class VisualTool:
 		self.canvas.tag_bind('chess_board', '<Button-1>', self.onclick)
 		# 保留绘制图像
 		self.master.mainloop()
+
 
 

@@ -56,4 +56,4 @@ class AlphaZeroPlayer(Player):
             print("WARNING: the board is full")
 
     def __str__(self):
-        return "AlphaZeroPlayer{}".format(self.get_player_name())
+        return "AlphaGobangZeroPlayer {}{}".format(self.get_player_no(), self.get_player_name())
