@@ -4,9 +4,10 @@ import numpy as np
 from VisualTool import *
 
 class Game(object):
-    def __init__(self, board):
+    def __init__(self, board, is_visualize=False):
         self.board = board
-        self.visualTool = VisualTool(board_size=[self.board.width, self.board.height])
+        self.visualTool = None
+        if is_visualize: self.visualTool = VisualTool(board_size=[self.board.width, self.board.height])
 
     def show(self):
         self.visualTool.draw()

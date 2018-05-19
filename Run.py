@@ -32,7 +32,7 @@ def run(config=None):
         who_first = 1 # 0 means player1 first, otherwise player2 first
 
         # --------------------3.start game--------------------#
-        game = Game(board)
+        game = Game(board,is_visualize=True)
         t = threading.Thread(target=game.start_game, args=(player1, player2, who_first))
         t.start()
         game.show()
