@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 from Config import *
 from Util import load_config
 
+'''experiment draw according to practice'''
+
 def draw_pk():
     plt.figure(figsize=(10, 10))
     plt.suptitle('PK')
@@ -28,7 +30,7 @@ def draw_pk():
     plt.show()
 
 
-def draw_loss(filename=tmp_data_file + 'epochs-850-opponent-Pure-win-1.00.pkl'):
+def draw_loss(filename=root_data_file + 'epochs-1500_resnet2.pkl'):
     config = load_config(file_name=filename, only_load_param=False)
     print (config.loss_records)
 
@@ -162,8 +164,7 @@ def draw_cpuct_parameters():
     plt.show()
 
 def draw_network():
-    import matplotlib.pyplot as plt
-    import numpy as np
+    '''data according to actual experiment'''
     plt.figure(figsize=(10, 10))
     plt.suptitle('Network Contrast Experiment')
     plt.xlabel('opponent')
@@ -197,4 +198,4 @@ def draw_network():
     plt.yticks(np.arange(0, 1.01, 0.1))
     plt.show()
 
-draw_network()
+draw_loss()
