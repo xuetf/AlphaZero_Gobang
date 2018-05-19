@@ -55,7 +55,7 @@ class TreeNode(object):
 
         self._n_visits += 1
         # Update Q, a running average of values for all visits.
-        # 这一步合并了W，Q, (参见AlphaGoZero论文方法论部分)推导如下：
+        # This step combine W,Q. Derived formula is as follows (reference AlphaGoZero Method Section)：
         # W = W_old + leaf_value; Q_old = W_old / (n-1) => W_old = (n-1)*Q_old; Q = W/n
         # Q = W/n=(W_old + leaf_value)/n = ((n-1)*Q_old+leaf_value)/n
         #   = (n*Q_old-Q_old+leaf_value)/n = Q_old + (leaf_value-Q_old)/n

@@ -1,27 +1,23 @@
 # coding:utf-8
 
 ###########################################################################################
-# 初始化传入参数
+# guide:
 # temp = visualTool(board_size, line_distance)
-# board_size: 棋盘大小 m*n
-# line_distance: 绘图网格间距(建议75)
-# player_name: 玩家名称
-# eg: temp = visualTool([10,10], 75, ["computer","human"])
+# board_size: board_size:m*n
+# line_distance: 75 recommended
+# eg: temp = visualTool([10,10], 75)
 
-# 初始化后马上调用 temp.draw() 函数后开始运行
+# after initial, then call temp.draw() show the window
 
-# 接口1   getmove()
-# 传入参数: 无
-# 返回参数: [x,y] 表示上次用户的下棋位置
-# 注: flag 变量值为真时, getmove() 获取的值为有效值
+# interface 1   getmove()
+# return [x,y] represents the last move of human
+# note: if flag is True, that means the human has click a valid location, then getmove() is ok
 
-# 接口2   graphic(x, y)
-# 传入参数: x, y 表示落子位置
-# 返回参数: 无
+# interface 2   graphic(x, y)
+# parameters: x, y location of x,y
 
-# 接口3   wininfo(winner)
-# 传入参数: winner 限定为0/1 表示玩家0/玩家1胜利
-# 返回参数: 无
+# interface 3   wininfo(winner)
+# parameters: winner info
 ###########################################################################################
 
 from tkinter import *
@@ -32,16 +28,17 @@ class VisualTool:
 
 	def __init__(self, board_size= (8, 8), line_distance=75):
 
-		self.flag = False # 是否点击的标志
-		self.location = [0,0] #用户上次下棋的位置
-		self.isblack = True # 当前下棋人是否为黑棋
-		self.line_distance = line_distance # 绘制网格间距
-		self.board_size = board_size # 棋盘大小 n*n
-		self.master = Tk() # 画图容器
-		self.canvas = Canvas(self.master, width=(self.board_size[1]+1)*self.line_distance, height=(self.board_size[0]+1)*self.line_distance+70)
-		#棋盘容器 初始化为全零 1黑 2白
+		self.flag = False # the click flag for human, used for blocking
+		self.location = [0,0] # the last click loction of human
+		self.isblack = True # current player is black or not
+		self.line_distance = line_distance # line distance
+		self.board_size = board_size # board_size
+		self.master = Tk() # container
+		self.canvas = Canvas(self.master, width=(self.board_size[0]+1)*self.line_distance, height=(self.board_size[1]+1)*self.line_distance+70)
+		# init 1 for blacks, 2 for white
 		self.chessdata = []
 		self.stone_num = 0
+		self.player_name = ["Computer", "Human"]
 		for i in range(board_size[0]):
 			self.chessdata.append([])
 			for j in range(board_size[1]):
@@ -59,15 +56,14 @@ class VisualTool:
 		self.player_name = player_name
 
 
-	# 获取用户上次动作
+	# get last move of human
 	def getmove(self):
-		self.flag = False
+		self.flag = False # important!!! block again
 		return (self.location[0], self.location[1])
 
 
-	# 绘制一个棋子
+	# graphic a stone
 	def graphic(self, x, y):
-		# 用户上步棋子位置失效
 		self.stone_num += 1
 		y_location = (self.board_size[0] - x) * self.line_distance
 		x_location = (y + 1) * self.line_distance
@@ -84,44 +80,42 @@ class VisualTool:
 									y_location+(0.5*self.line_distance)-0.1*self.line_distance,
 									fill="lightgray", outline="lightgray")
 			self.chessdata[x][y] = 2
-		# 变换当前下棋人颜色
+		# change current player
 		self.isblack = not self.isblack
 
-	# 显示胜利信息
+	# show winner info
 	def wininfo(self, winner):
-		'''直接将winner字段输出到界面即可'''
+		'''output the winner info to the window'''
 		self.canvas.create_text(0.5 * (self.board_size[0] + 2) * self.line_distance,
 										30, font="Times 20 italic bold", fill="red", text=winner)
 
 		self.canvas.delete('chess_board')
 		self.canvas.delete('board_line')
 
-	# 点击事件
+	# click event handler
 	def onclick(self, event):
 		if (self.isblack and self.can_click[0]) or (not self.isblack and self.can_click[1]):
-				# 判断点击范围是否合理
+				# decide whether the click is valid
 			if event.x > self.line_distance/2 and event.x < (self.board_size[1]+0.5)*self.line_distance and event.y > self.line_distance/2 and event.y < (self.board_size[0]+0.5)*self.line_distance:
 				y = math.floor((event.x - self.line_distance / 2) / self.line_distance)
 				x = self.board_size[0] - 1 - (math.floor((event.y - self.line_distance / 2) / self.line_distance))
-				# 判断是否重复点击
+				# decided whether a position that has been used or not
 				if self.chessdata[x][y] == 0:
-					# 绘制一个棋子
-					# self.graphic(x, y)
 					self.location = [x, y]
 					self.flag = True
 				else:
-					print("重复点击")
+					print("re-click the same position")
 
-	# 绘制函数
+	# draw canvas
 	def draw(self):
-		# 产生画布
+		# create canvas
 		self.canvas.pack()
-		# 绘制点击读取板
+		# create chess board
 		self.canvas.create_rectangle(0, 0, (self.board_size[1]+1)*self.line_distance, (self.board_size[0]+1)*self.line_distance, fill='white', outline='white', tags=('chess_board'))
-		# 绘制玩家信息
+		# create players info
 		self.canvas.create_text(0.25*(self.board_size[0]+2)*self.line_distance,(self.board_size[0]+1)*self.line_distance+20,fill="darkblue",font="Times 20 italic bold",text="Black: "+self.player_name[0])
 		self.canvas.create_text(0.65*(self.board_size[0]+2)*self.line_distance,(self.board_size[0]+1)*self.line_distance+20,fill="darkblue",font="Times 20 italic bold",text="White: "+self.player_name[1])
-		# 绘制棋盘
+		# create board
 		for x in range(0, (self.board_size[1]+1)*self.line_distance, self.line_distance):
 			self.canvas.create_line(x,self.line_distance,x,self.board_size[0]*self.line_distance,fill="#476042")
 		for y in range(0, (self.board_size[0]+1)*self.line_distance, self.line_distance):
@@ -132,11 +126,11 @@ class VisualTool:
 		for y in range(0, (self.board_size[0]+1)*self.line_distance, self.line_distance):
 			self.canvas.create_line(self.line_distance,y,self.board_size[1]*self.line_distance,y,fill="#476042", tags=('board_line'))
 
-		# 绑定点击事件
+		# bind the click event
 		self.canvas.tag_bind('board_line', '<Button-1>', self.onclick)
 		self.canvas.tag_bind('chess_board', '<Button-1>', self.onclick)
 
-		# 保留绘制图像
+		# show the window until being close
 		self.master.mainloop()
 
 

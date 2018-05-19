@@ -30,8 +30,8 @@ class RolloutMCTS(MCTS):
             # If no break from the loop, issue a warning.
             print("WARNING: rollout reached move limit")
 
-        # 设置leaf_value
-        if rollout_winner == -1:  # 平局 或者 达到limit步还没决出胜负
+        # set leaf_value
+        if rollout_winner == -1:  # tie
             leaf_value = 0
         else:
             leaf_value = 1.0 if rollout_winner == state.get_current_player() else -1.0

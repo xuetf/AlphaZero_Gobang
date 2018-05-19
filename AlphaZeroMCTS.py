@@ -2,7 +2,7 @@
 from MCTS import MCTS
 import numpy as np
 def softmax(x):
-    '''防止数值溢出, 减去一个值，不改变最终的大小'''
+    '''avoid data overflow'''
     probs = np.exp(x - np.max(x))
     probs /= np.sum(probs)
     return probs
@@ -17,7 +17,7 @@ class AlphaZeroMCTS(MCTS):
         action_probs, leaf_value = self._policy_value_fn(state)
 
         # Check for end of game, Adjust the leaf_value
-        # 若对局结束，直接根据胜负调整评估。policy evaluation
+        # if end, then policy evaluation
         is_end, winner = state.game_end()
         if is_end:
             if winner == -1:  # tie
@@ -30,7 +30,7 @@ class AlphaZeroMCTS(MCTS):
     def _play(self, temp=1e-3):
         '''
         calc the move probabilities based on the visit counts at the root node
-        temp: 温度参数,见论文
+        temp: temperature parameter
         '''
         act_visits = [(act, node._n_visits) for act, node in self._root._children.items()]
         acts, visits = zip(*act_visits)

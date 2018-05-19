@@ -29,7 +29,7 @@ class TrainPipeline():
                                                net_params=self.config.policy_param,
                                                Network=self.config.network, use_gpu=self.config.use_gpu)
 
-        # 传入policy_value_net的predict方法，神经网络辅助MCTS搜索过程
+        # forward the reference of policy_value_net'predict function，for MCTS simulation
         self.mcts_player = AlphaZeroPlayer(self.policy_value_net.predict, c_puct=self.config.c_puct,
                                            nplays=self.config.n_playout, is_selfplay=True)
 
@@ -37,13 +37,13 @@ class TrainPipeline():
     def self_play(self, n_games=1):
         """
         collect self-play data for training
-        n_game: 自我对弈n_game局后，再更新网络
+        n_game: self-play n_games and then optimize
         """
         self.episode_len = 0
         self.augmented_len = 0
         for i in range(n_games):
             winner, play_data, episode_len = self.config.game.start_self_play_game(self.mcts_player, temp=self.config.temp)
-            self.episode_len += episode_len # episode_len每局下的回合数
+            self.episode_len += episode_len # episode_len is the length of each self_play epoch
             # augment the data
             play_data = self.augment_data(play_data)
             self.augmented_len += len(play_data)
@@ -146,13 +146,13 @@ class TrainPipeline():
             '''
             for i in [1, 2, 3, 4]:
                 # rotate counterclockwise
-                equi_state = np.array([np.rot90(s, i) for s in state])  # i=4就是原来的数据
+                equi_state = np.array([np.rot90(s, i) for s in state])  # i=4 represents the origin data
                 equi_mcts_prob = np.rot90(np.flipud(mcts_porb.reshape(self.config.board_height, self.config.board_width)),
-                                          i)  # 上下翻转成棋盘形状，各个cell的值对应该位置下棋概率
+                                          i)  # flip up and down
                 extend_data.append((equi_state, np.flipud(equi_mcts_prob).flatten(), winner))
                 # flip horizontally
-                equi_state = np.array([np.fliplr(s) for s in equi_state])  # 水平翻转
-                equi_mcts_prob = np.fliplr(equi_mcts_prob)  # equi_mcts_prob和equi_state对应
+                equi_state = np.array([np.fliplr(s) for s in equi_state])  # flip left and right
+                equi_mcts_prob = np.fliplr(equi_mcts_prob)  # equi_mcts_prob need to flip left and right too
                 extend_data.append((equi_state, np.flipud(equi_mcts_prob).flatten(), winner))
         return extend_data
 
@@ -267,6 +267,6 @@ if __name__ == '__main__':
     #config = "tmp/epochs-{0}-opponent-{1}-win-{2:.2f}.pkl".format(360, 'AlphaZero', 0.60)
     config = None
     if args.config:
-        config = pickle.load(open(args.config, 'rb')) # 无缝重启训练，加载保存的模型运行时数据
+        config = pickle.load(open(args.config, 'rb')) # resume from a checkpoint
     training_pipeline = TrainPipeline(config=config)
     training_pipeline.run()

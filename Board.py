@@ -17,7 +17,7 @@ class Board(object):
             raise Exception('board width and height can not less than %d' % self.n_in_row)
         self.current_player = self.players[who_first]  # start player
         self.availables = list(range(self.width * self.height)) # available moves
-        self.states = {} # board states, key:move as location on the board, value:player as pieces type，保存走棋和对应的玩家；用于渲染棋盘展示，构建特征等
+        self.states = {} # board states, key:move as location on the board, value:player as pieces type
         self.last_move = -1
 
     def move2loc(self, move):

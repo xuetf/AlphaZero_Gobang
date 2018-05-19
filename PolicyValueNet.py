@@ -264,7 +264,7 @@ class ResNet2(nn.Module):
 class PolicyValueNet():
 
     def __init__(self, board_width, board_height, net_params=None, Network=None, use_gpu=False):
-        if Network is None: Network = SimpleNet
+        if Network is None: Network = ResNet
         self.use_gpu = use_gpu
         self.board_width = board_width
         self.board_height = board_height

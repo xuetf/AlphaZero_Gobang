@@ -11,7 +11,7 @@ def load_config(file_name, only_load_param=True):
       only_load_param:if only load the parameters of network ，be True； Then Need Manual setup some parameters
     :return:
     '''
-    # 如果只保存了参数
+    # if only save the network parameters
     if only_load_param:
         config = Config()
         # manual setup parameters

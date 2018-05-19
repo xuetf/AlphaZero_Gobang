@@ -119,7 +119,7 @@ class Game(object):
             if end:
                 # winner from the perspective of the current player of each state
                 winners_z = np.zeros(len(current_players))
-                if winner != -1: # 决出胜负了
+                if winner != -1: # end and has a winner
                     winners_z[np.array(current_players) == winner] = 1.0
                     winners_z[np.array(current_players) != winner] = -1.0
                 #reset MCTS root node
