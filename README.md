@@ -15,17 +15,15 @@ This is a AlphaZero Implementation of Gobang based on Pytorch.
 - PolicyValueNet.py: Redisual Network Implementation based on Pytorch
 - Board.py: Board Class for Gobang
 - Game.py: Game for Gobang
+- VisualTool.py: Tk Tool for visualizing Chess Board
 
 ## Running Script
-### Run on Linux Server
+### Run on Linux Server, background job
 nohup python -u Train.py > simpleres_train.log 2>&1 &
 
 ### Download the trained model
-scp root@139.199.21.83:/usr/local/workspace/AlphaZero_Gobang/data/current_policy_resnet_epochs_1500.model /Users/xuetf/Downloads
+scp root@ip:/usr/local/workspace/AlphaZero_Gobang/data/current_policy_resnet_epochs_1500.model /Users/xuetf/Downloads
 
-### Upload -P big!!!
+### Upload -P 
 scp -P 8381 local_file_path root@139.199.21.83:/root/
 
-
-## Reference
-[AlphaZero实战](https://zhuanlan.zhihu.com/p/32089487)
