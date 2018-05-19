@@ -30,7 +30,7 @@ def draw_pk():
     plt.show()
 
 
-def draw_loss(filename=root_data_file + 'epochs-1500_resnet2.pkl'):
+def draw_loss(filename=root_data_file + 'epochs-1500-resnet2.pkl'):
     config = load_config(file_name=filename, only_load_param=False)
     print (config.loss_records)
 

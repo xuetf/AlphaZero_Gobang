@@ -43,7 +43,7 @@ def run(config=None):
 
 
 if __name__ == '__main__':
-    config = load_config(file_name=root_data_file + 'epochs-1500_resnet2.pkl', only_load_param=False)
+    config = load_config(file_name=root_data_file + 'epochs-1100-resnet2.pkl', only_load_param=False)
     run(config)
 
 
