@@ -28,7 +28,7 @@ class Config:
         self.data_buffer = deque(maxlen=self.buffer_size)
         self.play_batch_size = 1  # how many games of each self-play epoch
         self.per_game_opt_times = 5  # num of train_steps for each update
-        self.is_adjust_lr = False  # whether dynamic changing lr
+        self.is_adjust_lr = True  # whether dynamic changing lr
         self.adjust_lr_freq = 5 # the frenquency of lr adjustment
         self.kl_targ = 0.02  # KL，used for lr adjustment, the smaller kl_targ, the smaller lr tends to be
         self.check_freq = 50  # frequency of checking the performance of current model and saving model
@@ -43,7 +43,7 @@ class Config:
         self.loss_records = [] # loss records
         self.best_win_pure_so_far = 0.0 # win ratio against rollout mcts player
         self.continuous_win_pure_times = 0 # the time of continuous winning against rollout mcts player
-        self.change_opponent_continuous_times = 100 # time when change evaluate opponent from Pure to AlphaZero
+        self.change_opponent_continuous_times = 5 # time when change evaluate opponent from Pure to AlphaZero
         self.win_ratio_alphazero = 0.55 # if win ratio against previous best alphazero is larger than 0.55 then it is ok to save
         self.cur_best_alphazero_store_filename = None # the current best AlphaZero Player
         self.evaluate_opponent = 'Pure' # The opponent to evaluate. Pure Opponent at the beginning of training, when beat pure opponent many times, then change to Previous Best AlphaZero Player
