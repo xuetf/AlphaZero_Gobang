@@ -94,6 +94,7 @@ class VisualTool:
 										30, font="Times 20 italic bold", fill="red", text=winner)
 
 		self.canvas.delete('chess_board')
+		self.canvas.delete('board_line')
 
 	# 点击事件
 	def onclick(self, event):
@@ -125,8 +126,16 @@ class VisualTool:
 			self.canvas.create_line(x,self.line_distance,x,self.board_size[0]*self.line_distance,fill="#476042")
 		for y in range(0, (self.board_size[0]+1)*self.line_distance, self.line_distance):
 			self.canvas.create_line(self.line_distance,y,self.board_size[1]*self.line_distance,y,fill="#476042")
+
+		for x in range(0, (self.board_size[1]+1)*self.line_distance, self.line_distance):
+			self.canvas.create_line(x,self.line_distance,x,self.board_size[0]*self.line_distance,fill="#476042", tags=('board_line'))
+		for y in range(0, (self.board_size[0]+1)*self.line_distance, self.line_distance):
+			self.canvas.create_line(self.line_distance,y,self.board_size[1]*self.line_distance,y,fill="#476042", tags=('board_line'))
+
 		# 绑定点击事件
+		self.canvas.tag_bind('board_line', '<Button-1>', self.onclick)
 		self.canvas.tag_bind('chess_board', '<Button-1>', self.onclick)
+
 		# 保留绘制图像
 		self.master.mainloop()
 
