@@ -38,6 +38,7 @@ class VisualTool:
 		# init 1 for blacks, 2 for white
 		self.chessdata = []
 		self.stone_num = 0
+		self.can_click = [True, True]
 		self.player_name = ["Computer", "Human"]
 		for i in range(board_size[0]):
 			self.chessdata.append([])
