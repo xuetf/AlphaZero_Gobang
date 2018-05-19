@@ -20,6 +20,7 @@ https://ptorch.com/news/145.html
 - Board.py: Board Class for Gobang
 - Game.py: Game for Gobang
 - VisualTool.py: Tk Tool for visualizing Chess Board
+- Config.py: store config. Serve as a snapshot when resuming
 
 ## Running Code
 ### Training
