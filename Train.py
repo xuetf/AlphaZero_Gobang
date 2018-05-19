@@ -97,7 +97,7 @@ class TrainPipeline():
         print ("lr:{}".format(self.config.learn_rate * self.config.lr_multiplier))
 
 
-    def evaluate(self, n_games=2):
+    def evaluate(self, n_games=10):
         """
         Evaluate the trained policy by playing games against the pure MCTS player
         Note: this is only for monitoring the progress of training
