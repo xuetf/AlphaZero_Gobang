@@ -16,12 +16,6 @@ def set_learning_rate(optimizer, lr):
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
-# def adjust_learning_rate(optimizer, lr, epoch):
-#     """Sets the learning rate to the initial LR decayed by 10 after 150 and 225 epochs"""
-#     lr = lr * (0.1 ** (epoch // 150)) * (0.1 ** (epoch // 225))
-#     # log to TensorBoard
-#     for param_group in optimizer.param_groups:
-#         param_group['lr'] = lr
 
 class ConvBlock(nn.Module):
     '''Convolutional Block'''
@@ -62,7 +56,7 @@ class ResidualBlock(nn.Module):
 
 
 class ResNet(nn.Module):
-    '''Full ResNet According to the paper'''
+    '''One Block ResNet According to the paper'''
     def __init__(self, board_width, board_height, in_channels=4, out_channels=128):
         super(ResNet, self).__init__()
         self.board_width = board_width
@@ -126,18 +120,20 @@ class ResNet(nn.Module):
         return "resnet"
 
 
-class SimpleNet(nn.Module):
-    """Only Conv Layers"""
+class ConvNet(nn.Module):
+    """Conv Layers"""
 
     def __init__(self, board_width, board_height):
-        super(SimpleNet, self).__init__()
+        super(ConvNet, self).__init__()
 
         self.board_width = board_width
         self.board_height = board_height
         # common layers
-        self.conv1 = nn.Conv2d(4, 32, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
-        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        n = 1 # 最开始是1
+        common_kernel_size = 2 * n + 1
+        self.conv1 = nn.Conv2d(4, 32, kernel_size=common_kernel_size, padding=n)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=common_kernel_size, padding=n)
+        self.conv3 = nn.Conv2d(64, 128, kernel_size=common_kernel_size, padding=n)
         # action policy layers
         self.act_conv1 = nn.Conv2d(128, 4, kernel_size=1)
         self.act_fc1 = nn.Linear(4 * board_width * board_height, board_width * board_height)
@@ -147,7 +143,7 @@ class SimpleNet(nn.Module):
         self.val_fc2 = nn.Linear(64, 1)
 
     def forward(self, state_input):
-        # common layers     
+        # common layers
         x = F.relu(self.conv1(state_input))
         x = F.relu(self.conv2(x))
         x = F.relu(self.conv3(x))
@@ -166,53 +162,41 @@ class SimpleNet(nn.Module):
         return policy_logits, policy_output, value_output
 
     def __str__(self):
-        return "simple_net"
+        return "conv_net"
 
 
-class SimpleResNet(nn.Module):
-    """Add Only One Residual Block based on SimpleNet """
-
+class FeedForwardNet(nn.Module):
+    '''Feed Forward Network'''
     def __init__(self, board_width, board_height):
-        super(SimpleResNet, self).__init__()
-
+        super(FeedForwardNet, self).__init__()
         self.board_width = board_width
         self.board_height = board_height
+
         # common layers
-        self.conv1 = nn.Conv2d(4, 128, kernel_size=3, padding=1)
-        self.res1 = ResidualBlock(128) # add a res_block
+        self.fc1 = nn.Linear(4 * board_width * board_height, board_width * board_height)
+
         # action policy layers
-        self.act_conv1 = nn.Conv2d(128, 4, kernel_size=1)
-        self.act_fc1 = nn.Linear(4 * board_width * board_height, board_width * board_height)
+        self.act_fc1 = nn.Linear(board_width * board_height, board_width * board_height)
+
         # state value layers
-        self.val_conv1 = nn.Conv2d(128, 2, kernel_size=1)
-        self.val_fc1 = nn.Linear(2 * board_width * board_height, 64)
-        self.val_fc2 = nn.Linear(64, 1)
+        self.val_fc1 = nn.Linear(board_width * board_height, 1)
 
     def forward(self, state_input):
         # common layers
-        x = F.leaky_relu(self.conv1(state_input))
-        x = F.leaky_relu(self.res1(x))
+        x = F.relu(self.fc1(state_input.view(-1, 4 * self.board_width * self.board_height)))
 
         # action policy layers
-        x_act = F.leaky_relu(self.act_conv1(x))
-        x_act = x_act.view(-1, 4 * self.board_width * self.board_height)
-        policy_logits = self.act_fc1(x_act)
-        policy_output = F.softmax(policy_logits, dim=1)
+        policy_logits = F.relu(self.act_fc1(x))
+        policy_output = F.softmax(policy_logits, dim=1)  # log是因为用库可以避免输出概率为0等特殊情况。否则如果后续用torch.log处理，会出现loss=nan的情况
 
         # state value layers
-        x_val = F.leaky_relu(self.val_conv1(x))
-        x_val = x_val.view(-1, 2 * self.board_width * self.board_height)
-        x_val = F.leaky_relu(self.val_fc1(x_val))
-        value_output = F.tanh(self.val_fc2(x_val))
+        value_output = F.tanh(self.val_fc1(x))
+
         return policy_logits, policy_output, value_output
 
 
-    def __str__(self):
-        return "simple_resnet"
-
-
 class ResNet2(nn.Module):
-    '''Full ResNet According to the paper'''
+    '''Two Block ResNet According to the paper'''
     def __init__(self, board_width, board_height, in_channels=4, out_channels=128):
         super(ResNet2, self).__init__()
         self.board_width = board_width

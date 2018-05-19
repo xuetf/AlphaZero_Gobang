@@ -28,8 +28,8 @@ def draw_pk():
     plt.show()
 
 
-def draw_loss():
-    config = load_config(file_name=tmp_data_file + 'config-epochs-270-1.00.pkl', only_load_param=False)
+def draw_loss(filename=tmp_data_file + 'epochs-850-opponent-Pure-win-1.00.pkl'):
+    config = load_config(file_name=filename, only_load_param=False)
     print (config.loss_records)
 
     combined_loss_list = [loss['combined_loss']for loss in config.loss_records]
@@ -48,8 +48,6 @@ def draw_epsilon_parameters():
     '''data according to experiment'''
     plt.figure(figsize=(10, 10))
     plt.suptitle(r'$\epsilon$ experiment')
-    plt.xlabel('opponent')
-    plt.ylabel('win ratio')
 
     ax = plt.subplot(2, 3, 1)
     ax.set_title(r'$\epsilon$=0 AlphaGobangZero')
@@ -59,6 +57,8 @@ def draw_epsilon_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
+    plt.ylabel('win ratio')
 
     ax = plt.subplot(2, 3, 2)
     ax.set_title(r'$\epsilon$=0.2 AlphaGobangZero')
@@ -68,6 +68,8 @@ def draw_epsilon_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
+
 
     ax = plt.subplot(2, 3, 3)
     ax.set_title(r'$\epsilon$=0.8 AlphaGobangZero')
@@ -77,6 +79,8 @@ def draw_epsilon_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
+
     plt.show()
 
 
@@ -84,8 +88,6 @@ def draw_n_parameters():
     '''data according to experiment'''
     plt.figure(figsize=(10, 10))
     plt.suptitle('n experiment')
-    plt.xlabel('opponent')
-    plt.ylabel('win ratio')
 
     ax = plt.subplot(2, 3, 1)
     ax.set_title('n=10 AlphaGobangZero')
@@ -95,6 +97,8 @@ def draw_n_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
+    plt.ylabel('win ratio')
 
     ax = plt.subplot(2, 3, 2)
     ax.set_title('n=400 AlphaGobangZero')
@@ -104,6 +108,8 @@ def draw_n_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
+
 
     ax = plt.subplot(2, 3, 3)
     ax.set_title('n=1000 AlphaGobangZero')
@@ -113,14 +119,14 @@ def draw_n_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
+
     plt.show()
 
 def draw_cpuct_parameters():
     '''data according to experiment'''
     plt.figure(figsize=(10, 10))
     plt.suptitle(r'$c_{puct}$ experiment')
-    plt.xlabel('opponent')
-    plt.ylabel('win ratio')
 
     ax = plt.subplot(2, 3, 1)
     ax.set_title(r'$c_{puct}$=1 AlphaGobangZero')
@@ -130,6 +136,8 @@ def draw_cpuct_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
+    plt.ylabel('win ratio')
 
     ax = plt.subplot(2, 3, 2)
     ax.set_title(r'$c_{puct}$=5 AlphaGobangZero')
@@ -139,6 +147,8 @@ def draw_cpuct_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
+
 
     ax = plt.subplot(2, 3, 3)
     ax.set_title(r'$c_{puct}$=20 AlphaGobangZero')
@@ -148,6 +158,43 @@ def draw_cpuct_parameters():
     plt.bar(range(len(names)), y)
     plt.xticks(x, names, rotation=45)
     plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.xlabel('opponent')
     plt.show()
 
-draw_pk()
+def draw_network():
+    import matplotlib.pyplot as plt
+    import numpy as np
+    plt.figure(figsize=(10, 10))
+    plt.suptitle('Network Contrast Experiment')
+    plt.xlabel('opponent')
+    plt.ylabel('win ratio')
+
+    ax = plt.subplot(2, 3, 1)
+    ax.set_title('AlphaZero')
+    names = ['ConvNet', 'ResNet_1', 'FFNet', 'Random', 'Human']
+    x = range(len(names))
+    y = [0.367, 0.567, 0.967, 1, 0.533]
+    plt.bar(range(len(names)), y)
+    plt.xticks(x, names, rotation=45)
+    plt.yticks(np.arange(0, 1.01, 0.1))
+
+    ax = plt.subplot(2, 3, 2)
+    ax.set_title('ConvNet')
+    names = ['AlphaZero', 'ResNet_1', 'FFNet', 'Random', 'Human']
+    x = range(len(names))
+    y = [0.633, 0.80, 0.933, 1, 0.6]
+    plt.bar(range(len(names)), y)
+    plt.xticks(x, names, rotation=45)
+    plt.yticks(np.arange(0, 1.01, 0.1))
+
+    ax = plt.subplot(2, 3, 3)
+    ax.set_title('FFNet')
+    names = ['AlphaZero', 'ResNet_1', 'ConvNet', 'Random', 'Human']
+    x = range(len(names))
+    y = [0, 0.067, 0.033, 0.933, 0.1]
+    plt.bar(range(len(names)), y)
+    plt.xticks(x, names, rotation=45)
+    plt.yticks(np.arange(0, 1.01, 0.1))
+    plt.show()
+
+draw_network()
