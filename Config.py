@@ -51,4 +51,4 @@ class Config:
         self.increase_mean_loss_times = 0 # the time of increasing loss, used to adjust lr
         self.adjust_lr_increase_loss_times = 3 # when the mean loss increase such times, then decrease lr by half
         self.episode_records = [] # save episode length for every game
-        self.use_gpu = True
+        self.use_gpu = False
