@@ -29,7 +29,7 @@ def run(config=None):
         #player2 = RolloutPlayer(nplays=1000, c_puct=config.c_puct)
         player2 = HumanPlayer()
         # --------------------2.set order---------------------#
-        who_first = 1 # 0 means player1 first, otherwise player2 first
+        who_first = 0 # 0 means player1 first, otherwise player2 first
 
         # --------------------3.start game--------------------#
         game = Game(board,is_visualize=True)
@@ -43,7 +43,7 @@ def run(config=None):
 
 
 if __name__ == '__main__':
-    config = load_config(file_name=tmp_data_file + 'epochs-1500_resnet2.pkl', only_load_param=False)
+    config = load_config(file_name=root_data_file + 'epochs-1500_Conv.pkl', only_load_param=False)
     run(config)
 
 

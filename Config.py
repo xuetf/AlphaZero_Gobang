@@ -6,7 +6,7 @@ from collections import deque
 
 # Global Variable
 root_data_file = "data/"
-tmp_data_file = "tmp/"
+
 
 class Config:
     def __init__(self):
