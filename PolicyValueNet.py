@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-An implementation of the policyValueNet in PyTorch (tested in PyTorch 0.2.0 and 0.3.0)
+An implementation of the policyValueNet in PyTorch (tested in PyTorch 0.3.0 and 0.3.1)
 """
 
 import torch
@@ -63,7 +63,7 @@ class ResNet(nn.Module):
         self.board_height = board_height
         # common layers
         self.conv_layer = ConvBlock(in_channels, out_channels)
-        self.res_layer = self.make_residual_layers(1, out_channels) # 论文里blocks=19 or 39
+        self.res_layer = self.make_residual_layers(1, out_channels) # in paper, blocks=19 or 39
 
         # policy head: action policy layers
         self.act_filters = 2
@@ -129,7 +129,7 @@ class ConvNet(nn.Module):
         self.board_width = board_width
         self.board_height = board_height
         # common layers
-        n = 1 # 最开始是1
+        n = 1
         common_kernel_size = 2 * n + 1
         self.conv1 = nn.Conv2d(4, 32, kernel_size=common_kernel_size, padding=n)
         self.conv2 = nn.Conv2d(32, 64, kernel_size=common_kernel_size, padding=n)
@@ -151,7 +151,7 @@ class ConvNet(nn.Module):
         x_act = F.relu(self.act_conv1(x))
         x_act = x_act.view(-1, 4 * self.board_width * self.board_height)
         policy_logits = self.act_fc1(x_act)
-        policy_output = F.softmax(policy_logits, dim=1) # log是因为用库可以避免输出概率为0等特殊情况。否则如果后续用torch.log处理，会出现loss=nan的情况
+        policy_output = F.softmax(policy_logits, dim=1) # use the api to process the zero probability situation and etc.
 
         # state value layers
         x_val = F.relu(self.val_conv1(x))
@@ -187,7 +187,7 @@ class FeedForwardNet(nn.Module):
 
         # action policy layers
         policy_logits = F.relu(self.act_fc1(x))
-        policy_output = F.softmax(policy_logits, dim=1)  # log是因为用库可以避免输出概率为0等特殊情况。否则如果后续用torch.log处理，会出现loss=nan的情况
+        policy_output = F.softmax(policy_logits, dim=1)  # use the api to process the zero probability situation and etc.
 
         # state value layers
         value_output = F.tanh(self.val_fc1(x))
@@ -203,11 +203,11 @@ class ResNet2(nn.Module):
         self.board_height = board_height
         # common layers
         self.conv_layer = ConvBlock(in_channels, out_channels)
-        self.res_layer = self.make_residual_layers(2, out_channels) # 论文里blocks=19 or 39
+        self.res_layer = self.make_residual_layers(2, out_channels) # in AlphaGoZero paper: blocks=19 or 39
 
         # policy head: action policy layers
         self.act_filters = 2
-        self.act_conv1 = nn.Conv2d(out_channels, self.act_filters, kernel_size=1, stride=1) #2 filters
+        self.act_conv1 = nn.Conv2d(out_channels, self.act_filters, kernel_size=1, stride=1) # 2 filters
         self.act_bn1 = nn.BatchNorm2d(self.act_filters)
         self.act_relu1 = nn.ReLU()
         self.act_fc1 = nn.Linear(self.act_filters * board_width * board_height, board_width * board_height)
@@ -342,7 +342,7 @@ class PolicyValueNet():
         loss.backward()
         self.optimizer.step()
         # calc policy entropy, for monitoring only，- sum (p*logp)
-        log_policy_output = F.log_softmax(policy_logits, dim=1) # 为了防止手动处理log时p负数问题，故先调用库函数
+        log_policy_output = F.log_softmax(policy_logits, dim=1) # # use the api to process the zero probability situation and etc.
         entropy = -torch.mean(torch.sum(torch.exp(log_policy_output) * log_policy_output, 1))
 
         # entropy is equivalent to policy loss.
