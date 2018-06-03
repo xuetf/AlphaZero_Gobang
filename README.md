@@ -4,6 +4,8 @@ This is a AlphaZero Implementation of Gobang based on Pytorch.
 ## Pytorch 0.3.1 Install
 https://ptorch.com/news/145.html
 
+## Github
+Code can be viewed in my github：https://github.com/xuetf/AlphaZero_Gobang
 
 ## Code
 - Train.py : Run the train process
