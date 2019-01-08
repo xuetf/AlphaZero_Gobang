@@ -21,8 +21,8 @@ Code can be viewed in my github：https://github.com/xuetf/AlphaZero_Gobang
 
 Illustration can be viewed in my blog: http://xtf615.com/2018/02/24/AlphaZeroDesign/
 
-## Final Homework Report(CVPR format)
-![report](./Gobang_AhphaZero.pdf)
+## Final Report(CVPR format)
+[Final Report: Analysis and Implementation of Deep Reinforcement Learning Based Gobang](./Gobang_AhphaZero.pdf)
 
 
 ## Code
