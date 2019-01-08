@@ -19,6 +19,12 @@ Code can be viewed in my github：https://github.com/xuetf/AlphaZero_Gobang
 ### Class Diagram
 ![diagram](./pic/AlphaZero_Design.png)
 
+Illustration can be viewed in my blog: http://xtf615.com/2018/02/24/AlphaZeroDesign/
+
+## Final Homework Report(CVPR format)
+![report](./Gobang_AhphaZero.pdf)
+
+
 ## Code
 - Train.py : Run the train process
 - Run.py : Play with Human using the trained model
