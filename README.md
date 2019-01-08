@@ -7,6 +7,18 @@ https://ptorch.com/news/145.html
 ## Github
 Code can be viewed in my github：https://github.com/xuetf/AlphaZero_Gobang
 
+
+## Design
+
+### RL framework
+![framework](./pic/framework.png)
+
+### Network Structure
+![structure](./pic/AlphaZeroNet.png)
+
+### Class Diagram
+![diagram](./pic/AlphaZero_Design.png)
+
 ## Code
 - Train.py : Run the train process
 - Run.py : Play with Human using the trained model
@@ -23,6 +35,8 @@ Code can be viewed in my github：https://github.com/xuetf/AlphaZero_Gobang
 - Game.py: Game for Gobang
 - VisualTool.py: Tk Tool for visualizing Chess Board
 - Config.py: store config. Serve as a snapshot when resuming
+
+
 
 ## Running Code
 ### Training
@@ -42,8 +56,11 @@ Code can be viewed in my github：https://github.com/xuetf/AlphaZero_Gobang
 
 ```python3 Run.py```
 
+## Result
+![game](./pic/game.png)
 
-## Download or Upload
+
+## Download or Upload From your OWN remote server
 
 ### Download the trained model from remote server
 scp root@ip:/usr/local/workspace/AlphaZero_Gobang/data/current_policy_resnet_epochs_1500.model /Users/xuetf/Downloads
